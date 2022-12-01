@@ -47,7 +47,7 @@ class MIDM(BaseMethod):
         c_q = [SL(x,self.axis) for x in w_q]
         
         for i in range(nmb_crops - 1):
-            loss += self.loss_f(w_q[i],w_k) + self.itn_lambda * c_q[i]
+            loss += self.loss_f(w_q[i],w_k) + self.trade_off * c_q[i]
 
         loss /= (nmb_crops - 1)
         return loss

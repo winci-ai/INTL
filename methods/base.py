@@ -17,7 +17,8 @@ class BaseMethod(nn.Module):
         self.axis = cfg.axis
         self.dist = cfg.distributed
         self.loss_f = norm_mse_loss
-        self.itn_lambda = (math.log2(cfg.bs) - 3) * 0.01
+        if cfg.axis == 0: self.trade_off = (math.log2(cfg.bs) - 3) * 0.01
+        else: self.trade_off = (math.log2(cfg.emb) - 3) * 0.01
 
     def forward(self, samples):
         raise NotImplementedError

@@ -19,7 +19,7 @@ class MID(BaseMethod):
         c = [SL(x,self.axis) for x in w]
 
         for i in range(1,nmb_crops):
-            loss += self.loss_f(w[i],w[0]) + self.itn_lambda*(c[i]+c[0])
+            loss += self.loss_f(w[i],w[0]) + self.trade_off*(c[i]+c[0])
         loss /= (nmb_crops - 1)
         return loss
 
