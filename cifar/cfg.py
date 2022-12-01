@@ -1,6 +1,7 @@
 import argparse
 from torchvision import models
-from methods import METHOD_LIST
+
+METHOD_LIST = ["mid","midm"]
 
 
 def get_cfg():
