@@ -5,10 +5,7 @@ from eval.dataloader import get_data
 
 def get_acc(model, ds, cfg):
     model.eval()
-    if cfg.distributed:
-        backbone, out_size = model.module.backbone, model.module.out_size
-    else:
-        backbone, out_size = model.backbone, model.out_size
+    backbone, out_size = model.module.backbone, model.module.out_size
     # torch.cuda.empty_cache()
     x_train, y_train = get_data(backbone, ds.clf, out_size, "cuda")
     x_test, y_test = get_data(backbone, ds.test, out_size, "cuda")
