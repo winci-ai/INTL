@@ -12,12 +12,14 @@ import torch.distributed as dist
 import torch.multiprocessing as mp
 import torch.utils.data
 import torch.utils.data.distributed
-from cifar.cfg import get_cfg
-from methods import get_method
-from cifar.transform import MultiTransform, CifarTransform
+from cfg import get_cfg
+from transform import MultiTransform, CifarTransform
 import wandb
 from torchvision.datasets import CIFAR10, CIFAR100
-from cifar.eval.dataloader import CIFAR10_clf, CIFAR100_clf
+from eval.dataloader import CIFAR10_clf, CIFAR100_clf
+import sys
+sys.path.append(os.path.dirname(sys.path[0]))
+from methods import get_method
 
 def main():
     cfg = get_cfg()
