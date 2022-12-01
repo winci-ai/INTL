@@ -16,7 +16,7 @@ class BaseMethod(nn.Module):
         self.emb_size = cfg.emb
         self.axis = cfg.axis
         self.dist = cfg.distributed
-        self.loss = norm_mse_loss
+        self.loss_f = norm_mse_loss
         self.itn_lambda = (math.log2(cfg.bs) - 3) * 0.01
 
     def forward(self, samples):

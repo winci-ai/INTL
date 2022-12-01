@@ -4,7 +4,7 @@ import torch
 import copy
 from itertools import chain
 
-class MIDm(BaseMethod):
+class MIDM(BaseMethod):
     
     def __init__(self, cfg):
         super().__init__(cfg)
