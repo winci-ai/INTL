@@ -1,7 +1,38 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from dataloader import get_data
 
+def get_acc(model, ds, cfg):
+    model.eval()
+    if cfg.distributed:
+        backbone, out_size = model.module.backbone, model.module.out_size
+    else:
+        backbone, out_size = model.backbone, model.out_size
+    # torch.cuda.empty_cache()
+    x_train, y_train = get_data(backbone, ds.clf, out_size, "cuda")
+    x_test, y_test = get_data(backbone, ds.test, out_size, "cuda")
+
+    acc_knn = eval_knn(x_train, y_train, x_test, y_test, cfg.knn)
+    acc_linear = eval_sgd(x_train, y_train, x_test, y_test)
+
+    del x_train, y_train, x_test, y_test
+    model.train()
+    return acc_knn, acc_linear
+
+def eval_knn(x_train, y_train, x_test, y_test, k=5):
+    """ k-nearest neighbors classifier accuracy """
+    d = torch.cdist(x_test, x_train)
+    topk = torch.topk(d, k=k, dim=1, largest=False)
+    labels = y_train[topk.indices]
+    pred = torch.empty_like(y_test)
+    for i in range(len(labels)):
+        x = labels[i].unique(return_counts=True)
+        pred[i] = x[0][x[1].argmax()]
+
+    acc = (pred == y_test).float().mean().cpu().item()
+    del d, topk, labels, pred
+    return acc
 
 def eval_sgd(x_train, y_train, x_test, y_test, topk=[1, 5], epoch=500):
     """ linear classifier accuracy (sgd) """

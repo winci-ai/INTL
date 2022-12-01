@@ -17,6 +17,7 @@ from transform import MultiTransform, CifarTransform
 import wandb
 from torchvision.datasets import CIFAR10, CIFAR100
 from eval.dataloader import CIFAR10_clf, CIFAR100_clf
+from eval.clf import get_acc
 import sys
 sys.path.append(os.path.dirname(sys.path[0]))
 from methods import get_method
@@ -160,13 +161,8 @@ def main_worker(gpu, ngpus_per_node, cfg):
         loss = train(train_loader, model, optimizer, epoch, cfg)
 
         if (epoch + 1) % cfg.eval_every == 0:
-            if cfg.distributed:
-                if cfg.gpu == 0:
-                    acc_knn, acc = model.module.get_acc(ds.clf, ds.test)
-            else:
-                acc_knn, acc = model.get_acc(ds.clf, ds.test)
-
             if cfg.gpu == 0 or cfg.gpu is None:
+                acc_knn, acc = get_acc(model, ds, cfg)
                 print("acc:",acc[1], "acc_5:",acc[5], "acc_knn:",acc_knn)
                 wandb.log({"acc": acc[1], "acc_5": acc[5], "acc_knn": acc_knn}, commit=False)
 
