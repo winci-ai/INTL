@@ -91,11 +91,11 @@ def main_worker(gpu, ngpus_per_node, cfg):
         else:
             model.cuda()
             model = torch.nn.parallel.DistributedDataParallel(model)
-    elif cfg.gpu is not None:
+    elif cfg.gpu is not None:       
         torch.cuda.set_device(cfg.gpu)
         model = model.cuda(cfg.gpu)
     else:
-        model.cuda()
+        model = torch.nn.DataParallel(model).cuda()
     print(model) 
 
     param_weights = []

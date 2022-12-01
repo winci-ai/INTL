@@ -26,6 +26,5 @@ def get_backbone(cfg):
         backbone.maxpool = nn.Identity()
     out_size = backbone.fc.in_features
     backbone.fc = nn.Identity()
-    if not cfg.distributed:
-        backbone = nn.DataParallel(backbone)
+
     return backbone, out_size
