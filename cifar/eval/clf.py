@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from dataloader import get_data
+from eval.dataloader import get_data
 
 def get_acc(model, ds, cfg):
     model.eval()
