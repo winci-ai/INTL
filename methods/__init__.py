@@ -1,5 +1,5 @@
 from .mid import MID
-from .midm import MIDm
+from .midm import MIDM
 
 METHOD_LIST = ["mid","midm"]
 
@@ -9,5 +9,5 @@ def get_method(name):
     if name == "mid":
         return MID
     if name == "midm":
-        return MIDm
+        return MIDM
  
