@@ -20,6 +20,7 @@ import torchvision.datasets as datasets
 import torchvision.models as models
 from cfg import get_cfg
 import wandb
+from src.meter import AverageMeter, ProgressMeter
 
 best_acc1 = 0
 
@@ -42,14 +43,7 @@ def main():
                       'disable data parallelism.')
     if cfg.train_percent in {1, 10}:
         cfg.train_files = open('./src/percent/{}percent.txt'.format(cfg.train_percent), 'r').readlines()
-
-        """
-        cfg.train_files = urllib.request.urlopen(
-            f'https://raw.githubusercontent.com/google-research/simclr/master/imagenet_subsets/{cfg.train_percent}percent.txt'
-            ).readlines()
-        """
-
-        
+ 
     if cfg.dist_url == "env://" and cfg.world_size == -1:
         cfg.world_size = int(os.environ["WORLD_SIZE"])
 
@@ -57,14 +51,9 @@ def main():
 
     ngpus_per_node = torch.cuda.device_count()
     if cfg.multiprocessing_distributed:
-        # Since we have ngpus_per_node processes per node, the total world_size
-        # needs to be adjusted accordingly
         cfg.world_size = ngpus_per_node * cfg.world_size
-        # Use torch.multiprocessing.spawn to launch distributed processes: the
-        # main_worker process function
         mp.spawn(main_worker, nprocs=ngpus_per_node, args=(ngpus_per_node, cfg))
     else:
-        # Simply call main_worker function
         main_worker(cfg.gpu, ngpus_per_node, cfg)
 
 
@@ -156,8 +145,6 @@ def main_worker(gpu, ngpus_per_node, cfg):
         else:
             print("=> no checkpoint found at '{}'".format(cfg.pretrained))
 
-
-    # infer learning rate before changing batch size
 
     if cfg.distributed:
         if cfg.gpu is not None:
@@ -390,48 +377,6 @@ def save_checkpoint(state, is_best, cfg):
     if is_best:
         best_file = str(cfg.env_name) + '_lincls_best.pth.tar'
         shutil.copyfile(filename, best_file)
-
-
-class AverageMeter(object):
-    """Computes and stores the average and current value"""
-    def __init__(self, name, fmt=':f'):
-        self.name = name
-        self.fmt = fmt
-        self.reset()
-
-    def reset(self):
-        self.val = 0
-        self.avg = 0
-        self.sum = 0
-        self.count = 0
-
-    def update(self, val, n=1):
-        self.val = val
-        self.sum += val * n
-        self.count += n
-        self.avg = self.sum / self.count
-
-    def __str__(self):
-        fmtstr = '{name} {val' + self.fmt + '} ({avg' + self.fmt + '})'
-        return fmtstr.format(**self.__dict__)
-
-
-class ProgressMeter(object):
-    def __init__(self, num_batches, meters, prefix=""):
-        self.batch_fmtstr = self._get_batch_fmtstr(num_batches)
-        self.meters = meters
-        self.prefix = prefix
-
-    def display(self, batch):
-        entries = [self.prefix + self.batch_fmtstr.format(batch)]
-        entries += [str(meter) for meter in self.meters]
-        print('\t'.join(entries))
-
-    def _get_batch_fmtstr(self, num_batches):
-        num_digits = len(str(num_batches // 1))
-        fmt = '{:' + str(num_digits) + 'd}'
-        return '[' + fmt + '/' + fmt.format(num_batches) + ']'
-
 
 def adjust_learning_rate(optimizer, epoch, cfg):
     """Decay the learning rate based on schedule"""
