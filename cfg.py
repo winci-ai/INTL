@@ -2,7 +2,7 @@ import argparse
 from torchvision import models
 from methods import METHOD_LIST
 
-DS_LIST = ["imagenet"]
+DS_LIST = ["in100","imagenet"]
 
 def get_cfg():
     model_names = sorted(name for name in models.__dict__

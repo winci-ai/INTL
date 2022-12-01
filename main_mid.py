@@ -14,7 +14,7 @@ import torch.utils.data
 import torch.utils.data.distributed
 from cfg import get_cfg
 from methods import get_method
-from src.transform import MultiTransform, ImageNetTransform, MultiCrop_Setup
+from src.transform import MultiTransform, ImageNetTransform, MultiCrops
 import wandb
 import torchvision.datasets as datasets
 
@@ -131,7 +131,7 @@ def main_worker(gpu, ngpus_per_node, cfg):
 
     cudnn.benchmark = True
 
-    cfg = MultiCrop_Setup(cfg)
+    cfg = MultiCrops(cfg)
 
     # Data loading code 
     assert len(cfg.nmb_crops) == len(cfg.gaussian_prob)

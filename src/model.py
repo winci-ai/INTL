@@ -18,9 +18,12 @@ def get_projection(out_size, cfg):
 def get_backbone(cfg):
     """ creates backbone E() by name and modifies it for dataset """
     zero_init = True
-    if cfg.arch != 'resnet50':
+    if cfg.arch == 'resnet18':
         zero_init = False
     backbone = getattr(models, cfg.arch)(zero_init_residual=zero_init)
+    if cfg.dataset == "cifar10" or cfg.dataset == "cifar100":
+        backbone.conv1 = nn.Conv2d(3, 64, kernel_size=3, stride=1, padding=1, bias=False)
+        backbone.maxpool = nn.Identity()
     out_size = backbone.fc.in_features
     backbone.fc = nn.Identity()
     if not cfg.distributed:
