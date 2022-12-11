@@ -13,11 +13,15 @@ import torch.multiprocessing as mp
 import torch.utils.data
 import torch.utils.data.distributed
 from cfg import get_cfg
-from methods import get_method
-from src.transform import MultiTransform, ImageNetTransform, MultiCrops
-from src.meter import AverageMeter, ProgressMeter
+from transform import MultiTransform, CifarTransform
 import wandb
-import torchvision.datasets as datasets
+from torchvision.datasets import CIFAR10, CIFAR100
+from eval.dataloader import CIFAR10_clf, CIFAR100_clf
+from eval.clf import get_acc
+import sys
+sys.path.append(os.path.dirname(sys.path[0]))
+from methods import get_method
+from src.meter import AverageMeter, ProgressMeter
 
 def main():
     cfg = get_cfg()
@@ -47,8 +51,8 @@ def main():
         cfg.world_size = ngpus_per_node * cfg.world_size
         mp.spawn(main_worker, nprocs=ngpus_per_node, args=(ngpus_per_node, cfg))
     else:
+        # Simply call main_worker function
         main_worker(cfg.gpu, ngpus_per_node, cfg)
-
 
 def main_worker(gpu, ngpus_per_node, cfg):
     cfg.gpu = gpu
@@ -57,10 +61,10 @@ def main_worker(gpu, ngpus_per_node, cfg):
         def print_pass(*cfg):
             pass
         builtins.print = print_pass
-    cfg.wandb = 'mid_train'
+    cfg.wandb = 'ins_cifar'
     if cfg.gpu == 0 or cfg.gpu is None:
         wandb.init(project=cfg.wandb, name = cfg.env_name, config=cfg)
-        
+
     if cfg.gpu is not None:
         print("Use GPU: {} for training".format(cfg.gpu))
 
@@ -76,6 +80,7 @@ def main_worker(gpu, ngpus_per_node, cfg):
     print("=> creating model '{}'".format(cfg.arch))
     model = get_method(cfg.method)(cfg)
 
+    # infer learning rate before changing batch size
     cfg.base_lr = cfg.lr * cfg.bs / 256
 
     if cfg.distributed:
@@ -91,24 +96,18 @@ def main_worker(gpu, ngpus_per_node, cfg):
         else:
             model.cuda()
             model = torch.nn.parallel.DistributedDataParallel(model)
-    elif cfg.gpu is not None:       
+    elif cfg.gpu is not None:
         torch.cuda.set_device(cfg.gpu)
         model = model.cuda(cfg.gpu)
     else:
         model = torch.nn.DataParallel(model).cuda()
+
     print(model) 
 
-    param_weights = []
-    param_biases = []
-    for param in model.parameters():
-        if param.ndim == 1:
-            param_biases.append(param)
-        else:
-            param_weights.append(param)
-
-    optimizer = torch.optim.SGD([{'params': param_biases, 'weight_decay': 0,},
-                                {'params': param_weights, 'weight_decay': cfg.weight_decay}],
-                                lr=0, momentum=0.9)
+    # define optimizer
+    optim_params = model.parameters()
+    optimizer = torch.optim.SGD(optim_params, 0, momentum=0.9, 
+                                weight_decay=cfg.weight_decay)
 
     # optionally resume from a checkpoint
     if cfg.resume:
@@ -125,51 +124,48 @@ def main_worker(gpu, ngpus_per_node, cfg):
             optimizer.load_state_dict(checkpoint['optimizer'])
             print("=> loaded checkpoint '{}' (epoch {})"
                   .format(cfg.resume, checkpoint['epoch']))
-            del checkpoint
         else:
             print("=> no checkpoint found at '{}'".format(cfg.resume))
 
     cudnn.benchmark = True
-
-    cfg = MultiCrops(cfg)
-
+    
     # Data loading code 
-    assert len(cfg.nmb_crops) == len(cfg.gaussian_prob)
-    assert len(cfg.nmb_crops) == len(cfg.solarization_prob)
-    assert len(cfg.nmb_crops) == len(cfg.crops_size)
-    assert len(cfg.nmb_crops) == len(cfg.min_scale_crops)
-    assert len(cfg.nmb_crops) == len(cfg.max_scale_crops)
+    assert cfg.nmb_crops == len(cfg.solarization_prob)
+    transforms = [CifarTransform(cifar = cfg.dataset, solarization_prob = cfg.solarization_prob[i]) for i in range(cfg.nmb_crops) ]
 
-    transforms = []
-    for i in range(len(cfg.nmb_crops)):
-        for _ in range(cfg.nmb_crops[i]):
-            transforms.append(ImageNetTransform(crop_size = cfg.crops_size[i], min_scale = cfg.min_scale_crops[i],
-                                max_scale = cfg.max_scale_crops[i], gaussian_prob = cfg.gaussian_prob[i], 
-                                solarization_prob = cfg.solarization_prob[i])  )
-                                
-    traindir = os.path.join(cfg.data_path, 'train')
-    train_dataset = datasets.ImageFolder(traindir, MultiTransform(transforms))
+    t = MultiTransform(transforms)
+    if cfg.dataset == 'cifar100':
+        train_dataset = CIFAR100(root=cfg.data_path, train=True, transform=t, download=True)
+        ds = CIFAR100_clf(cfg)
+    else:
+        train_dataset = CIFAR10(root=cfg.data_path, train=True, transform=t, download=True)
+        ds = CIFAR10_clf(cfg)
 
     if cfg.distributed:
         train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset)
     else:
         train_sampler = None
 
+    
     train_loader = torch.utils.data.DataLoader(
         train_dataset, batch_size=cfg.bs, shuffle=(train_sampler is None),
         num_workers=cfg.workers, pin_memory=True, sampler=train_sampler, drop_last=True)
 
     cfg.total_steps = cfg.epochs * len(train_loader)
     cfg.warmup_steps = cfg.warmup_eps * len(train_loader)
+    print(cfg)
     
-    print(cfg)  
-
-    scaler = torch.cuda.amp.GradScaler()
     for epoch in range(cfg.start_epoch, cfg.epochs):
         if cfg.distributed:
             train_sampler.set_epoch(epoch)
 
-        loss = train(train_loader, model, optimizer, scaler, epoch, cfg)
+        loss = train(train_loader, model, optimizer, epoch, cfg)
+
+        if (epoch + 1) % cfg.eval_every == 0:
+            if cfg.gpu == 0 or cfg.gpu is None:
+                acc_knn, acc = get_acc(model, ds, cfg)
+                print("acc:",acc[1], "acc_5:",acc[5], "acc_knn:",acc_knn)
+                wandb.log({"acc": acc[1], "acc_5": acc[5], "acc_knn": acc_knn}, commit=False)
 
         if cfg.gpu == 0 or cfg.gpu is None:
             wandb.log({"learning_rate": optimizer.param_groups[0]['lr'],
@@ -186,11 +182,10 @@ def main_worker(gpu, ngpus_per_node, cfg):
                     'optimizer' : optimizer.state_dict(),}
             torch.save(state,'{}/ckpt_{}.pth.tar'.format(save_pth, cfg.env_name))
 
-            if (epoch + 1) % 100 == 0:
+            if (epoch + 1) % 500 == 0:
                 torch.save(state,'{}/checkpoint_{}_{:04d}.pth.tar'.format(save_pth, cfg.env_name, epoch))
 
-            
-def train(train_loader, model, optimizer, scaler, epoch, cfg):
+def train(train_loader, model, optimizer, epoch, cfg):
     batch_time = AverageMeter('Time', ':6.3f')
     data_time = AverageMeter('Data', ':6.3f')
     losses = AverageMeter('Loss', ':.4f')
@@ -204,27 +199,24 @@ def train(train_loader, model, optimizer, scaler, epoch, cfg):
     end = time.time()
     loss_ep = []
     # train for one epoch
-    for step, (samples, _) in enumerate(train_loader): 
+    for step, (samples,_) in enumerate(train_loader):
         # measure data loading time
         data_time.update(time.time() - end)
         cur_steps = step + epoch * len(train_loader)
+    
         adjust_learning_rate(optimizer, cfg, cur_steps)
-
         optimizer.zero_grad()
-        with torch.cuda.amp.autocast():
-            loss = model(samples)
-        scaler.scale(loss).backward()
-        scaler.step(optimizer)
-        scaler.update()
+        loss = model(samples)
+        loss.backward()
+        optimizer.step()
         loss_ep.append(loss.item())
         losses.update(loss.item())
         # measure elapsed time
         batch_time.update(time.time() - end)
         end = time.time()
-
+        
         if step % cfg.print_freq == 0:
             progress.display(step)
-
 
     return np.mean(loss_ep)
 

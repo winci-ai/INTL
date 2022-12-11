@@ -2,7 +2,7 @@ import torch
 from methods.base import BaseMethod
 from methods.whitening import Whitening2dIterNorm
 
-class MID(BaseMethod):
+class INS(BaseMethod):
     
     def __init__(self, cfg):
         super().__init__(cfg)

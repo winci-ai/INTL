@@ -70,7 +70,7 @@ def get_cfg():
                          'fastest way to use PyTorch for either single node or '
                          'multi node data parallel training')
     parser.add_argument(
-        "--method", type=str, choices=METHOD_LIST, default="mid", help="loss type",
+        "--method", type=str, choices=METHOD_LIST, default="ins", help="loss type",
     )
     parser.add_argument(
         "--env_name",
