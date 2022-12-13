@@ -69,7 +69,7 @@ def main_worker(gpu, ngpus_per_node, cfg):
     if cfg.gpu is not None:
         print("Use GPU: {} for training".format(cfg.gpu))
 
-    cfg.wandb = 'ins_cls'
+    cfg.wandb = 'ins_eval'
     if cfg.gpu == 0 or cfg.gpu is None:
         wandb.init(project=cfg.wandb, name = cfg.env_name, config=cfg)
 

@@ -1,2 +1,3 @@
-# mid
-Mild Decorrelation is Superior for Self-supervised Learning
+# INS
+
+Iterative Normalization with Spherical loss
