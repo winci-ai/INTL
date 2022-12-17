@@ -172,8 +172,8 @@ def main_worker(gpu, ngpus_per_node, cfg):
         loss = train(train_loader, model, optimizer, scaler, epoch, cfg)
 
         if cfg.gpu == 0 or cfg.gpu is None:
-            wandb.log({"learning_rate": optimizer.param_groups[0]['lr'],
-                            "loss": loss, "ep": epoch})
+            wandb.log({"learning_rate": optimizer.param_groups[0]['lr'], 
+                        "m": model.module.m, "loss": loss, "ep": epoch})
  
         if not cfg.multiprocessing_distributed or (cfg.multiprocessing_distributed
                 and cfg.rank % ngpus_per_node == 0):
