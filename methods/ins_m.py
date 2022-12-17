@@ -18,7 +18,6 @@ class INS_M(BaseMethod):
         for param in chain(self.momentum_backbone.parameters(), 
                            self.momentum_projection.parameters()):
             param.requires_grad = False
-        self.m = cfg.m
 
     @torch.no_grad()
     def _momentum_update_key_encoder(self, m):
@@ -28,7 +27,6 @@ class INS_M(BaseMethod):
         for param_q, param_k in zip(self.backbone.parameters(), 
                                     self.momentum_backbone.parameters()):
             param_k.data = param_k.data * m + param_q.data * (1. - m)
-
         for param_q, param_k in zip(self.projection.parameters(),
                                     self.momentum_projection.parameters()):
             param_k.data = param_k.data * m + param_q.data * (1. - m)

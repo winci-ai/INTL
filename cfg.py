@@ -64,7 +64,7 @@ def get_cfg():
     parser.add_argument('--gpu', default=None, type=int,
                     help='GPU id to use.')
 
-    parser.add_argument('--multiprocessing-distributed','--md', action='store_true',
+    parser.add_argument("--no_md", dest="multiprocessing_distributed", action="store_false",
                     help='Use multi-processing distributed training to launch '
                          'N processes per node, which has N GPUs. This is the '
                          'fastest way to use PyTorch for either single node or '
@@ -122,7 +122,7 @@ def get_cfg():
     parser.add_argument("--emb", type=int, default=8192, help="embedding size")
 
     parser.add_argument(
-        "--m", type=float, default=0.999, help="itn_momentum"
+        "--m", type=float, default=0.996, help="ins_momentum"
     )
 
     parser.add_argument("--dataset", type=str, choices=DS_LIST, default="imagenet")

@@ -161,7 +161,7 @@ def main_worker(gpu, ngpus_per_node, cfg):
 
     cfg.total_steps = cfg.epochs * len(train_loader)
     cfg.warmup_steps = cfg.warmup_eps * len(train_loader)
-    
+
     print(cfg)  
 
     scaler = torch.cuda.amp.GradScaler()
@@ -209,6 +209,7 @@ def train(train_loader, model, optimizer, scaler, epoch, cfg):
         data_time.update(time.time() - end)
         cur_steps = step + epoch * len(train_loader)
         adjust_learning_rate(optimizer, cfg, cur_steps)
+        adjust_momentum(model, cfg, cur_steps)
 
         optimizer.zero_grad()
         with torch.cuda.amp.autocast():
@@ -239,6 +240,9 @@ def adjust_learning_rate(optimizer, cfg, step):
         lr = cfg.base_lr * q + end_lr * (1 - q)
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr
+
+def adjust_momentum(model, cfg, step):
+    model.module.m = 1. - 0.5 * (1. + math.cos(math.pi * step / cfg.total_steps)) * (1. - cfg.m)
 
 if __name__ == '__main__':
     main()
