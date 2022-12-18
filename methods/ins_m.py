@@ -6,7 +6,7 @@ from itertools import chain
 
 class INS_M(BaseMethod):
     # Iterative Normalization with Spherical loss (Momentum)
-    
+
     def __init__(self, cfg):
         super().__init__(cfg)
         self.ITN = Whitening2dIterNorm(dist=cfg.distributed,
@@ -46,7 +46,7 @@ class INS_M(BaseMethod):
         s = [SL(x,self.axis) for x in q]
         
         for i in range(nmb_crops - 1):
-            loss += self.loss_f(q[i],k) + self.trade_off * s[i]
+            loss += self.loss_f(q[i], k) + self.trade_off * s[i]
         loss /= (nmb_crops - 1)
         return loss
 

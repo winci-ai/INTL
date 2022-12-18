@@ -4,7 +4,7 @@ from methods.whitening import Whitening2dIterNorm
 
 class INS(BaseMethod):
     # Iterative Normalization with Spherical loss
-    
+
     def __init__(self, cfg):
         super().__init__(cfg)
         self.ITN = Whitening2dIterNorm(dist=cfg.distributed,
@@ -16,11 +16,14 @@ class INS(BaseMethod):
         loss = 0
         nmb_crops = len(samples)
 
-        w = [self.ITN(self.projection(self.backbone(x.cuda(non_blocking=True)))) for x in samples]
+        for x in samples:
+            x.cuda(non_blocking=True)
+
+        w = [self.ITN(self.projection(self.backbone(x))) for x in samples]
         s = [SL(x,self.axis) for x in w]
 
         for i in range(1,nmb_crops):
-            loss += self.loss_f(w[i],w[0]) + self.trade_off*(s[i]+s[0])
+            loss += self.loss_f(w[i], w[0]) + self.trade_off * (s[i] + s[0])
         loss /= (nmb_crops - 1)
         return loss
 
