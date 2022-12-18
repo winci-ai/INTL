@@ -124,7 +124,7 @@ def main_worker(gpu, ngpus_per_node, cfg):
             print("=> loading checkpoint '{}'".format(cfg.pretrained))
             checkpoint = torch.load(cfg.pretrained, map_location="cpu")
 
-            # rename moco pre-trained keys
+            # rename ins pre-trained keys
             state_dict = checkpoint['state_dict']
             for k in list(state_dict.keys()):
                 # retain only encoder up to before the embedding layer
@@ -223,7 +223,6 @@ def main_worker(gpu, ngpus_per_node, cfg):
     if cfg.train_percent in {1, 10}:
         train_dataset.samples = []
         for fname in cfg.train_files:
-            #fname = fname.decode().strip()
             fname = fname.strip()
             cls = fname.split('_')[0]
             pth = os.path.join(traindir, cls, fname)
