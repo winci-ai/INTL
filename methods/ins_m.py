@@ -42,10 +42,10 @@ class INS_M(BaseMethod):
 
         q = [self.ITN(self.projection(self.backbone(x))) for x in samples[1:]]
         k = self.ITN(self.momentum_projection(self.momentum_backbone(samples[0])))
-        sl = [SL(x,self.axis) for x in q]
+        s = [SL(x,self.axis) for x in q]
         
         for i in range(nmb_crops - 1):
-            loss += self.loss_f(q[i],k) + self.trade_off * sl[i]
+            loss += self.loss_f(q[i],k) + self.trade_off * s[i]
         loss /= (nmb_crops - 1)
         return loss
 
@@ -53,7 +53,7 @@ def SL(x: torch.Tensor, axis) -> torch.Tensor:
     # Spherical loss
     if axis == 0:
         x = x.T
-    N, D = x.size()
+    N, _ = x.size()
     x = x - x.mean(dim=0)
     d = torch.pow(x,2).sum(axis = 0) / (N - 1)
     sl = d.add_(-1).pow_(2).sum()

@@ -16,10 +16,10 @@ class INS(BaseMethod):
         nmb_crops = len(samples)
 
         w = [self.ITN(self.projection(self.backbone(x.cuda(non_blocking=True)))) for x in samples]
-        c = [SL(x,self.axis) for x in w]
+        s = [SL(x,self.axis) for x in w]
 
         for i in range(1,nmb_crops):
-            loss += self.loss_f(w[i],w[0]) + self.trade_off*(c[i]+c[0])
+            loss += self.loss_f(w[i],w[0]) + self.trade_off*(s[i]+s[0])
         loss /= (nmb_crops - 1)
         return loss
 
