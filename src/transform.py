@@ -13,13 +13,6 @@ class GaussianBlur(object):
         sigma = random.uniform(self.sigma[0], self.sigma[1])
         x = x.filter(ImageFilter.GaussianBlur(radius=sigma))
         return x
-
-class MultiTransform:
-    def __init__(self, transforms):
-        self.transforms = transforms
-
-    def __call__(self, x):
-        return tuple(transform(x) for transform in self.transforms)
     
 class Solarization:
     """Solarization as a callable object."""
@@ -31,12 +24,18 @@ class Solarization:
         Returns:
             Image: solarized image.
         """
-
         return ImageOps.solarize(img)
 
 class Equalization:
     def __call__(self, img: Image) -> Image:
         return ImageOps.equalize(img)
+
+class Augmentations:
+    def __init__(self, transforms):
+        self.transforms = transforms
+
+    def __call__(self, x):
+        return tuple(transform(x) for transform in self.transforms)
 
 class BaseTransform:
     """Adds callable base class to implement different transformation pipelines."""

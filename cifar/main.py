@@ -13,7 +13,7 @@ import torch.multiprocessing as mp
 import torch.utils.data
 import torch.utils.data.distributed
 from cfg import get_cfg
-from transform import MultiTransform, CifarTransform
+from transform import Augmentations, CifarTransform
 import wandb
 from torchvision.datasets import CIFAR10, CIFAR100
 from eval.dataloader import CIFAR10_clf, CIFAR100_clf
@@ -133,7 +133,7 @@ def main_worker(gpu, ngpus_per_node, cfg):
     assert cfg.nmb_crops == len(cfg.solarization_prob)
     transforms = [CifarTransform(cifar = cfg.dataset, solarization_prob = cfg.solarization_prob[i]) for i in range(cfg.nmb_crops) ]
 
-    t = MultiTransform(transforms)
+    t = Augmentations(transforms)
     if cfg.dataset == 'cifar100':
         train_dataset = CIFAR100(root=cfg.data_path, train=True, transform=t, download=True)
         ds = CIFAR100_clf(cfg)
@@ -234,7 +234,8 @@ def adjust_learning_rate(optimizer, cfg, step):
         param_group['lr'] = lr
 
 def adjust_momentum(model, cfg, step):
-    model.module.m = 1. - 0.5 * (1. + math.cos(math.pi * step / cfg.total_steps)) * (1. - cfg.m)
+    if cfg.method == 'ins_m':
+        model.module.m = 1. - 0.5 * (1. + math.cos(math.pi * step / cfg.total_steps)) * (1. - cfg.m)
 
 if __name__ == '__main__':
     main()

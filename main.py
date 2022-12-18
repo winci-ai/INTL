@@ -14,7 +14,7 @@ import torch.utils.data
 import torch.utils.data.distributed
 from cfg import get_cfg
 from methods import get_method
-from src.transform import MultiTransform, ImageNetTransform, MultiCrops
+from src.transform import Augmentations, ImageNetTransform, MultiCrops
 from src.meter import AverageMeter, ProgressMeter
 import wandb
 import torchvision.datasets as datasets
@@ -148,7 +148,7 @@ def main_worker(gpu, ngpus_per_node, cfg):
                                 solarization_prob = cfg.solarization_prob[i])  )
                                 
     traindir = os.path.join(cfg.data_path, 'train')
-    train_dataset = datasets.ImageFolder(traindir, MultiTransform(transforms))
+    train_dataset = datasets.ImageFolder(traindir, Augmentations(transforms))
 
     if cfg.distributed:
         train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset)
@@ -242,7 +242,8 @@ def adjust_learning_rate(optimizer, cfg, step):
         param_group['lr'] = lr
 
 def adjust_momentum(model, cfg, step):
-    model.module.m = 1. - 0.5 * (1. + math.cos(math.pi * step / cfg.total_steps)) * (1. - cfg.m)
+    if cfg.method == 'ins_m':
+        model.module.m = 1. - 0.5 * (1. + math.cos(math.pi * step / cfg.total_steps)) * (1. - cfg.m)
 
 if __name__ == '__main__':
     main()
