@@ -1,7 +1,6 @@
 import torch.nn as nn
 from torchvision import models
 
-
 def get_projection(out_size, cfg):
     """ creates projection g() from config """
     x = []
@@ -13,7 +12,6 @@ def get_projection(out_size, cfg):
         in_size = cfg.projection_size
     x.append(nn.Linear(in_size, cfg.emb))
     return nn.Sequential(*x)
-
 
 def get_backbone(cfg):
     """ creates backbone E() by name and modifies it for dataset """

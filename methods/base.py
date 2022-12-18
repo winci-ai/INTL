@@ -8,7 +8,6 @@ class BaseMethod(nn.Module):
         Base class for self-supervised loss implementation.
         It includes backbone and projection for training function.
     """
-
     def __init__(self, cfg):
         super().__init__()
         self.backbone, self.out_size = get_backbone(cfg)
@@ -17,8 +16,7 @@ class BaseMethod(nn.Module):
         self.axis = cfg.axis
         self.dist = cfg.distributed
         self.loss_f = norm_mse_loss
-        if cfg.axis == 0: self.trade_off = (math.log2(cfg.bs) - 3) * 0.01
-        else: self.trade_off = (math.log2(cfg.emb) - 3) * 0.01
+        self.trade_off = cal_trade_off(cfg)
         self.m = 0
 
     def forward(self, samples):
@@ -29,5 +27,9 @@ def norm_mse_loss(x0, x1):
     x1 = F.normalize(x1)
     return 2 - 2 * (x0 * x1).sum(dim=-1).mean()
 
-
-
+def cal_trade_off(cfg):
+    if cfg.axis == 0: 
+        trade_off = (math.log2(cfg.bs) - 3) * 0.01
+    else:
+        trade_off = (math.log2(cfg.emb) - 3) * 0.01
+    return trade_off

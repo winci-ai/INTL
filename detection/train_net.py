@@ -24,7 +24,6 @@ class Res5ROIHeadsExtraNorm(Res5ROIHeads):
         seq.add_module("norm", norm)
         return seq, out_channels
 
-
 class Trainer(DefaultTrainer):
     @classmethod
     def build_evaluator(cls, cfg, dataset_name, output_folder=None):
@@ -36,7 +35,6 @@ class Trainer(DefaultTrainer):
             assert "voc" in dataset_name
             return PascalVOCDetectionEvaluator(dataset_name)
 
-
 def setup(args):
     cfg = get_cfg()
     cfg.merge_from_file(args.config_file)
@@ -44,7 +42,6 @@ def setup(args):
     cfg.freeze()
     default_setup(cfg, args)
     return cfg
-
 
 def main(args):
     cfg = setup(args)
@@ -60,7 +57,6 @@ def main(args):
     trainer = Trainer(cfg)
     trainer.resume_or_load(resume=args.resume)
     return trainer.train()
-
 
 if __name__ == "__main__":
     args = default_argument_parser().parse_args()

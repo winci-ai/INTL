@@ -24,7 +24,7 @@ class INS(BaseMethod):
         return loss
 
 def SL(x: torch.Tensor, axis) -> torch.Tensor:
-    # spherical distribution loss
+    # Spherical loss
     if axis == 0:
         x = x.T
     N, _ = x.size()

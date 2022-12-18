@@ -1,5 +1,5 @@
 
-## MID: Transferring to Detection
+## INS: Transferring to Detection
 
 The `train_net.py` script reproduces the object detection experiments on Pascal VOC and COCO.
 
@@ -7,9 +7,9 @@ The `train_net.py` script reproduces the object detection experiments on Pascal 
 
 1. Install [detectron2](https://github.com/facebookresearch/detectron2/blob/master/INSTALL.md).
 
-1. Convert a pre-trained MID model to detectron2's format:
+1. Convert a pre-trained INS model to detectron2's format:
    ```
-   python3 convert-pretrain-to-detectron2.py input.pth.tar mid.pkl
+   python3 convert-pretrain-to-detectron2.py input.pth.tar ins.pkl
    ```
 
 1. Put dataset under "./datasets" directory,
@@ -18,6 +18,6 @@ The `train_net.py` script reproduces the object detection experiments on Pascal 
 
 1. Run training:
    ```
-   python train_net.py --config-file configs/pascal_voc_R_50_C4_24k_mid.yaml \
-	--num-gpus 2 MODEL.WEIGHTS ./mid.pkl
+   python train_net.py --config-file configs/pascal_voc_R_50_C4_24k_ins.yaml \
+	--num-gpus 2 MODEL.WEIGHTS ./ins.pkl
    ```

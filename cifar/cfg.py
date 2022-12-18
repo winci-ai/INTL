@@ -1,7 +1,7 @@
 import argparse
 from torchvision import models
 
-METHOD_LIST = ["mid","midm"]
+METHOD_LIST = ["ins","ins_m"]
 
 
 def get_cfg():
@@ -127,7 +127,5 @@ def get_cfg():
         choices=[0,1],
         default=0, 
         help='0 for channel whitening, 1 for batch whitening')
-
-
 
     return parser.parse_args()

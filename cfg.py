@@ -75,7 +75,7 @@ def get_cfg():
     parser.add_argument(
         "--env_name",
         type=str,
-        default="MID",
+        default="INS",
         help="name of the run for wandb project",
     )
     parser.add_argument(
@@ -91,24 +91,24 @@ def get_cfg():
     
     # data augmentation
     parser.add_argument("--nmb_crops", type=int, default=[1, 1], nargs="+",
-                    help="list of number of crops (example: [1, 1, 6])")
+                    help="list of number of crops (example: [1, 1, 1, 1])")
                     
     parser.add_argument("--crops_size", type=int, default=[224, 224], nargs="+",
-                    help="crops resolutions (example: [224, 224, 96])")
+                    help="crops resolutions (example: [192, 160, 128, 96])")
 
     parser.add_argument("--min_scale_crops", type=float, default=[0.08, 0.08], nargs="+",
-                    help="argument in RandomResizedCrop (example: [0.2, 0.14, 0.05])")
+                    help="argument in RandomResizedCrop (example: [0.2, 0.167, 0.133, 0.1])")
 
     parser.add_argument("--max_scale_crops", type=float, default=[1, 1], nargs="+",
-                    help="argument in RandomResizedCrop (example: [1.,0.95.,0.84.])")
+                    help="argument in RandomResizedCrop (example: [1.0, 0.833, 0.667, 0.5])")
 
     parser.add_argument("--gaussian_prob", type=float, default=[1.0, 0.1], nargs="+",
-                    help="gaussian_prob (example: [1.0, 0.1, 0])")
+                    help="gaussian_prob (example:[0.5, 0.5, 0.5, 0.5])")
 
     parser.add_argument("--solarization_prob", type=float, default=[0.0, 0.2], nargs="+",
-                    help="gaussian_prob (example: [0.0, 0.2, 0])")
+                    help="gaussian_prob (example: [0.1, 0.1, 0.1, 0.1])")
     
-    parser.add_argument('--multicrop', type=int, default=0, help='multicrop')
+    parser.add_argument('--multicrop', type=int, default=0, choices=[0,1,2,3], help='easy multicrop')
 
     parser.add_argument(
         "--w_eps", type=float, default=0, help="eps for stability for whitening"
@@ -124,7 +124,7 @@ def get_cfg():
     parser.add_argument(
         "--m", type=float, default=0.996, help="ins_momentum"
     )
-
+    
     parser.add_argument("--dataset", type=str, choices=DS_LIST, default="imagenet")
 
     parser.add_argument("--data_path", type=str, default='data/ImageNet/')

@@ -62,7 +62,7 @@ class Whitening2dIterNorm(Whitening2d):
         sigma_norm = sigma * trace.reciprocal()
 
         projection = eye
-        for k in range(self.iterations):
+        for _ in range(self.iterations):
             projection = torch.baddbmm(projection, torch.matrix_power(projection, 3), sigma_norm, beta=1.5, alpha=-0.5)
         wm = projection.mul_(trace.reciprocal().sqrt())
         return wm

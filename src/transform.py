@@ -14,7 +14,6 @@ class GaussianBlur(object):
         x = x.filter(ImageFilter.GaussianBlur(radius=sigma))
         return x
 
-
 class MultiTransform:
     def __init__(self, transforms):
         self.transforms = transforms
@@ -22,7 +21,6 @@ class MultiTransform:
     def __call__(self, x):
         return tuple(transform(x) for transform in self.transforms)
     
-
 class Solarization:
     """Solarization as a callable object."""
 
@@ -35,7 +33,6 @@ class Solarization:
         """
 
         return ImageOps.solarize(img)
-
 
 class Equalization:
     def __call__(self, img: Image) -> Image:
@@ -110,7 +107,6 @@ class ImageNetTransform(BaseTransform):
                 transforms.Normalize(mean, std),
             ]
         )
-
 
 def MultiCrops(cfg):
 

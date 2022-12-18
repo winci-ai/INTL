@@ -17,7 +17,7 @@ from transform import MultiTransform, CifarTransform
 import wandb
 from torchvision.datasets import CIFAR10, CIFAR100
 from eval.dataloader import CIFAR10_clf, CIFAR100_clf
-from eval.clf import get_acc
+from eval.evaluate import get_acc
 import sys
 sys.path.append(os.path.dirname(sys.path[0]))
 from methods import get_method

@@ -40,18 +40,17 @@ class INS_M(BaseMethod):
         for x in samples:
             x.cuda(non_blocking=True)
 
-        w_q = [self.ITN(self.projection(self.backbone(x))) for x in samples[1:]]
-        w_k = self.ITN(self.momentum_projection(self.momentum_backbone(samples[0])))
-        c_q = [SL(x,self.axis) for x in w_q]
+        q = [self.ITN(self.projection(self.backbone(x))) for x in samples[1:]]
+        k = self.ITN(self.momentum_projection(self.momentum_backbone(samples[0])))
+        sl = [SL(x,self.axis) for x in q]
         
         for i in range(nmb_crops - 1):
-            loss += self.loss_f(w_q[i],w_k) + self.trade_off * c_q[i]
-
+            loss += self.loss_f(q[i],k) + self.trade_off * sl[i]
         loss /= (nmb_crops - 1)
         return loss
 
 def SL(x: torch.Tensor, axis) -> torch.Tensor:
-    # spherical distribution loss
+    # Spherical loss
     if axis == 0:
         x = x.T
     N, D = x.size()

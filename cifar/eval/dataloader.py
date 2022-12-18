@@ -23,12 +23,10 @@ def get_data(model, loader, output_size, device):
 
 class BaseDataset(metaclass=ABCMeta):
     """
-        base class for datasets, it includes 3 types:
-            - for self-supervised training,
+        base class for datasets, it includes 2 types:
             - for classifier training for evaluation,
             - for testing
     """
-
     def __init__(
         self, cfg, bs_clf=1000, bs_test=1000,
     ):
