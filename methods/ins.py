@@ -3,6 +3,7 @@ from methods.base import BaseMethod
 from methods.whitening import Whitening2dIterNorm
 
 class INS(BaseMethod):
+    # Iterative Normalization with Spherical loss
     
     def __init__(self, cfg):
         super().__init__(cfg)

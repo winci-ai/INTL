@@ -5,6 +5,7 @@ import copy
 from itertools import chain
 
 class INS_M(BaseMethod):
+    # Iterative Normalization with Spherical loss (Momentum)
     
     def __init__(self, cfg):
         super().__init__(cfg)
