@@ -49,7 +49,6 @@ def main():
     else:
         main_worker(cfg.gpu, ngpus_per_node, cfg)
 
-
 def main_worker(gpu, ngpus_per_node, cfg):
     cfg.gpu = gpu
     # suppress printing if not master
@@ -188,8 +187,7 @@ def main_worker(gpu, ngpus_per_node, cfg):
 
             if (epoch + 1) % 100 == 0:
                 torch.save(state,'{}/checkpoint_{}_{:04d}.pth.tar'.format(save_pth, cfg.env_name, epoch))
-
-            
+      
 def train(train_loader, model, optimizer, scaler, epoch, cfg):
     batch_time = AverageMeter('Time', ':6.3f')
     data_time = AverageMeter('Data', ':6.3f')
@@ -225,7 +223,6 @@ def train(train_loader, model, optimizer, scaler, epoch, cfg):
 
         if step % cfg.print_freq == 0:
             progress.display(step)
-
 
     return np.mean(loss_ep)
 

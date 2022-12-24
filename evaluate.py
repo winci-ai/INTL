@@ -24,7 +24,6 @@ from src.meter import AverageMeter, ProgressMeter
 
 best_acc1 = 0
 
-
 def main():
     cfg = get_cfg()
         
@@ -55,7 +54,6 @@ def main():
         mp.spawn(main_worker, nprocs=ngpus_per_node, args=(ngpus_per_node, cfg))
     else:
         main_worker(cfg.gpu, ngpus_per_node, cfg)
-
 
 def main_worker(gpu, ngpus_per_node, cfg):
     global best_acc1
@@ -144,7 +142,6 @@ def main_worker(gpu, ngpus_per_node, cfg):
             del checkpoint, state_dict
         else:
             print("=> no checkpoint found at '{}'".format(cfg.pretrained))
-
 
     if cfg.distributed:
         if cfg.gpu is not None:
@@ -242,7 +239,6 @@ def main_worker(gpu, ngpus_per_node, cfg):
         val_dataset, batch_size=256, shuffle=False,
         num_workers=cfg.workers, pin_memory=True)
     
-
     if cfg.evaluate:
         validate(val_loader, model, criterion, cfg)
         return
@@ -274,7 +270,6 @@ def main_worker(gpu, ngpus_per_node, cfg):
                 'best_acc1': best_acc1,
                 'optimizer' : optimizer.state_dict(),
             }, is_best, cfg)
-
 
 def train(train_loader, model, criterion, optimizer, epoch, cfg):
     batch_time = AverageMeter('Time', ':6.3f')
@@ -325,7 +320,6 @@ def train(train_loader, model, criterion, optimizer, epoch, cfg):
         if i % cfg.print_freq == 0:
             progress.display(i)
 
-
 def validate(val_loader, model, criterion, cfg):
     batch_time = AverageMeter('Time', ':6.3f')
     losses = AverageMeter('Loss', ':.4e')
@@ -369,7 +363,6 @@ def validate(val_loader, model, criterion, cfg):
 
     return top1.avg, top5.avg
 
-
 def save_checkpoint(state, is_best, cfg):
     filename = str(cfg.env_name)+'_lincls_ckpt.pth.tar' 
     torch.save(state, filename)
@@ -383,7 +376,6 @@ def adjust_learning_rate(optimizer, epoch, cfg):
     optimizer.param_groups[0]['lr'] = cfg.lr_classifier * q
     if cfg.weights == 'finetune':
         optimizer.param_groups[1]['lr'] = cfg.lr_backbone * q
-
 
 def accuracy(output, target, topk=(1,)):
     """Computes the accuracy over the k top predictions for the specified values of k"""
@@ -400,7 +392,6 @@ def accuracy(output, target, topk=(1,)):
             correct_k = correct[:k].reshape(-1).float().sum(0, keepdim=True)
             res.append(correct_k.mul_(100.0 / batch_size))
         return res
-
 
 if __name__ == '__main__':
     main()
