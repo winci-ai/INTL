@@ -370,13 +370,6 @@ def save_checkpoint(state, is_best, cfg):
         best_file = str(cfg.env_name) + '_lincls_best.pth.tar'
         shutil.copyfile(filename, best_file)
 
-def adjust_learning_rate(optimizer, epoch, cfg):
-    """Decay the learning rate based on schedule"""
-    q =  0.5 * (1. + math.cos(math.pi * epoch / cfg.epochs))
-    optimizer.param_groups[0]['lr'] = cfg.lr_classifier * q
-    if cfg.weights == 'finetune':
-        optimizer.param_groups[1]['lr'] = cfg.lr_backbone * q
-
 def accuracy(output, target, topk=(1,)):
     """Computes the accuracy over the k top predictions for the specified values of k"""
     with torch.no_grad():
