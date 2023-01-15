@@ -20,6 +20,7 @@ import torchvision.datasets as datasets
 import torchvision.models as models
 from cfg import get_cfg
 import wandb
+from torch.optim.lr_scheduler import MultiStepLR, CosineAnnealingLR
 from src.meter import AverageMeter, ProgressMeter
 
 best_acc1 = 0
@@ -111,10 +112,10 @@ def main_worker(gpu, ngpus_per_node, cfg):
         param_groups.append(dict(params=model_parameters, lr=cfg.lr_backbone))
     optimizer = torch.optim.SGD(param_groups, 0, momentum=0.9, weight_decay=cfg.weight_decay)
 
-    if cfg.lars:
-        print("=> use LARS optimizer.")
-        from apex.parallel.LARC import LARC
-        optimizer = LARC(optimizer=optimizer, trust_coefficient=.001, clip=False)
+    if cfg.schedule == 'cos':
+        scheduler = CosineAnnealingLR(optimizer, cfg.epochs)
+    elif cfg.schedule == 'step':
+        scheduler = MultiStepLR(optimizer, milestones=[60, 80], gamma=0.1)
 
     # load from pre-trained, before DistributedDataParallel constructor
     if cfg.pretrained:
@@ -246,10 +247,9 @@ def main_worker(gpu, ngpus_per_node, cfg):
     for epoch in range(cfg.start_epoch, cfg.epochs):
         if cfg.distributed:
             train_sampler.set_epoch(epoch)
-        adjust_learning_rate(optimizer, epoch, cfg)
-
         # train for one epoch
         train(train_loader, model, criterion, optimizer, epoch, cfg)
+        scheduler.step()
 
         # evaluate on validation set
         acc1, acc5 = validate(val_loader, model, criterion, cfg)

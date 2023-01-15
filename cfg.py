@@ -140,17 +140,18 @@ def get_cfg():
                     choices=(100, 10, 1),
                     help='size of traing set in percent')
 
-    parser.add_argument('--lars', action='store_true',
-                    help='Use lars optimizer')
-
     parser.add_argument('--weights', default='freeze', type=str,
                     choices=('finetune', 'freeze'),
                     help='finetune or freeze resnet weights')
+
+    parser.add_argument('--schedule', default='step', type=str,
+                    choices=('step', 'cos'),
+                    help='learning rate scheduler')
     
-    parser.add_argument('--lr-backbone', default=0.0, type=float, metavar='LR',
+    parser.add_argument('--lr-backbone', default=0.004, type=float, metavar='LR',
                     help='backbone base learning rate')
 
-    parser.add_argument('--lr-classifier', default=0.1, type=float, metavar='LR',
+    parser.add_argument('--lr-classifier', default=0.2, type=float, metavar='LR',
                     help='classifier base learning rate')
 
 
