@@ -20,7 +20,7 @@ import torchvision.datasets as datasets
 import torchvision.models as models
 from cfg import get_cfg
 import wandb
-from torch.optim.lr_scheduler import MultiStepLR, CosineAnnealingLR
+from torch.optim.lr_scheduler import MultiStepLR
 from src.meter import AverageMeter, ProgressMeter
 
 best_acc1 = 0
@@ -112,9 +112,7 @@ def main_worker(gpu, ngpus_per_node, cfg):
         param_groups.append(dict(params=model_parameters, lr=cfg.lr_backbone))
     optimizer = torch.optim.SGD(param_groups, 0, momentum=0.9, weight_decay=cfg.weight_decay)
 
-    if cfg.schedule == 'cos':
-        scheduler = CosineAnnealingLR(optimizer, cfg.epochs)
-    elif cfg.schedule == 'step':
+    if cfg.schedule == 'step':
         scheduler = MultiStepLR(optimizer, milestones=[60, 80], gamma=0.1)
 
     # load from pre-trained, before DistributedDataParallel constructor
@@ -248,8 +246,11 @@ def main_worker(gpu, ngpus_per_node, cfg):
         if cfg.distributed:
             train_sampler.set_epoch(epoch)
         # train for one epoch
+        if cfg.schedule == 'cos':
+            adjust_learning_rate(optimizer, epoch, cfg)
         train(train_loader, model, criterion, optimizer, epoch, cfg)
-        scheduler.step()
+        if cfg.schedule == 'step':
+            scheduler.step()
 
         # evaluate on validation set
         acc1, acc5 = validate(val_loader, model, criterion, cfg)
@@ -369,6 +370,13 @@ def save_checkpoint(state, is_best, cfg):
     if is_best:
         best_file = str(cfg.env_name) + '_lincls_best.pth.tar'
         shutil.copyfile(filename, best_file)
+
+def adjust_learning_rate(optimizer, epoch, cfg):
+    """Decay the learning rate based on schedule"""
+    q =  0.5 * (1. + math.cos(math.pi * epoch / cfg.epochs))
+    optimizer.param_groups[0]['lr'] = cfg.lr_classifier * q
+    if cfg.weights == 'finetune':
+        optimizer.param_groups[1]['lr'] = cfg.lr_backbone * q
 
 def accuracy(output, target, topk=(1,)):
     """Computes the accuracy over the k top predictions for the specified values of k"""
