@@ -56,7 +56,7 @@ def main_worker(gpu, ngpus_per_node, cfg):
         def print_pass(*cfg):
             pass
         builtins.print = print_pass
-    cfg.wandb = 'ins_train'
+    cfg.wandb = 'intl_train'
     if cfg.gpu == 0 or cfg.gpu is None:
         wandb.init(project=cfg.wandb, name = cfg.env_name, config=cfg)
         

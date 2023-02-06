@@ -4,15 +4,13 @@ import torch
 import copy
 from itertools import chain
 
-class INS_M(BaseMethod):
-    # Iterative Normalization with Spherical loss (Momentum)
+class INTL_M(BaseMethod):
+    # Iterative Normalization with Trace loss (Momentum)
 
     def __init__(self, cfg):
         super().__init__(cfg)
-        self.ITN = Whitening2dIterNorm(dist=cfg.distributed,
-                                        eps=cfg.w_eps,
-                                        axis=cfg.axis,
-                                        iterations=cfg.iters)
+        self.IterNorm = Whitening2dIterNorm(dist=cfg.distributed, eps=cfg.w_eps,
+                                            axis=cfg.axis, iterations=cfg.iters)
 
         self.momentum_backbone = copy.deepcopy(self.backbone)
         self.momentum_projection = copy.deepcopy(self.projection)
@@ -41,21 +39,21 @@ class INS_M(BaseMethod):
         for x in samples:
             x.cuda(non_blocking=True)
 
-        q = [self.ITN(self.projection(self.backbone(x))) for x in samples[1:]]
-        k = self.ITN(self.momentum_projection(self.momentum_backbone(samples[0])))
-        s = [SL(x,self.axis) for x in q]
+        tq = [self.IterNorm(self.projection(self.backbone(x))) for x in samples[1:]]
+        tk = self.IterNorm(self.momentum_projection(self.momentum_backbone(samples[0])))
+        tl = [TL(x,self.axis) for x in tq]
         
         for i in range(nmb_crops - 1):
-            loss += self.loss_f(q[i], k) + self.trade_off * s[i]
+            loss += self.loss_f(tq[i], tk) + self.trade_off * tl[i]
         loss /= (nmb_crops - 1)
         return loss
 
-def SL(x: torch.Tensor, axis) -> torch.Tensor:
-    # Spherical loss
+def TL(x: torch.Tensor, axis) -> torch.Tensor:
+    # Trace loss
     if axis == 0:
         x = x.T
     N, _ = x.size()
     x = x - x.mean(dim=0)
     d = torch.pow(x,2).sum(axis = 0) / (N - 1)
-    sl = d.add_(-1).pow_(2).sum()
-    return sl
+    tl = d.add_(-1).pow_(2).sum()
+    return tl

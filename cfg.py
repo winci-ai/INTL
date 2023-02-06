@@ -70,12 +70,12 @@ def get_cfg():
                          'fastest way to use PyTorch for either single node or '
                          'multi node data parallel training')
     parser.add_argument(
-        "--method", type=str, choices=METHOD_LIST, default="ins", help="loss type",
+        "--method", type=str, choices=METHOD_LIST, default="intl", help="loss type",
     )
     parser.add_argument(
         "--env_name",
         type=str,
-        default="INS",
+        default="INTL",
         help="name of the run for wandb project",
     )
     parser.add_argument(

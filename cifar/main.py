@@ -61,7 +61,7 @@ def main_worker(gpu, ngpus_per_node, cfg):
         def print_pass(*cfg):
             pass
         builtins.print = print_pass
-    cfg.wandb = 'ins_cifar'
+    cfg.wandb = 'intl_cifar'
     if cfg.gpu == 0 or cfg.gpu is None:
         wandb.init(project=cfg.wandb, name = cfg.env_name, config=cfg)
 
@@ -183,7 +183,7 @@ def main_worker(gpu, ngpus_per_node, cfg):
             torch.save(state,'{}/ckpt_{}.pth.tar'.format(save_pth, cfg.env_name))
 
             if (epoch + 1) % 500 == 0:
-                torch.save(state,'{}/checkpoint_{}_{:04d}.pth.tar'.format(save_pth, cfg.env_name, epoch))
+                torch.save(state,'{}/ckpt_{}_{:04d}.pth.tar'.format(save_pth, cfg.env_name, epoch))
 
 def train(train_loader, model, optimizer, epoch, cfg):
     batch_time = AverageMeter('Time', ':6.3f')
@@ -234,7 +234,7 @@ def adjust_learning_rate(optimizer, cfg, step):
         param_group['lr'] = lr
 
 def adjust_momentum(model, cfg, step):
-    if cfg.method == 'ins_m':
+    if cfg.method == 'intl_m':
         model.module.m = 1. - 0.5 * (1. + math.cos(math.pi * step / cfg.total_steps)) * (1. - cfg.m)
 
 if __name__ == '__main__':

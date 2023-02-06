@@ -1,7 +1,7 @@
 import argparse
 from torchvision import models
 
-METHOD_LIST = ["ins","ins_m"]
+METHOD_LIST = ["intl","intl_m"]
 
 
 def get_cfg():
@@ -26,7 +26,7 @@ def get_cfg():
         "--bs", type=int, default=256, help="train bs",
     )
     parser.add_argument('--m', default=0.999, type=float, metavar='L',
-                        help='itn_momentum')
+                        help='intl_momentum')
                         
     parser.add_argument('--lr', '--learning-rate', default=0.3, type=float,
                     metavar='LR', help='initial (base) learning rate for train', dest='lr')
@@ -72,13 +72,13 @@ def get_cfg():
                          'multi node data parallel training')
                          
     parser.add_argument(
-        "--method", type=str, choices=METHOD_LIST, default="ins", help="loss type",
+        "--method", type=str, choices=METHOD_LIST, default="intl", help="loss type",
     )
 
     parser.add_argument(
         "--env_name",
         type=str,
-        default="INS_cifar",
+        default="INTL_Cifar",
         help="name of the run for wandb project",
     )
 
@@ -93,7 +93,7 @@ def get_cfg():
                     help="gaussian_prob (example: [0.0, 0.2])")
 
     parser.add_argument(
-        "--iters", type=int, default=4, help="ITN_iterations",
+        "--iters", type=int, default=4, help="IterNorm_iterations",
     )
 
     parser.add_argument(
