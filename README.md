@@ -1,3 +1,3 @@
-# INS
+# INTL
 
-Iterative Normalization with Spherical loss
+Iterative Normalization with Trace loss
