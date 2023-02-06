@@ -186,7 +186,7 @@ def main_worker(gpu, ngpus_per_node, cfg):
             torch.save(state,'{}/ckpt_{}.pth.tar'.format(save_pth, cfg.env_name))
 
             if (epoch + 1) % 100 == 0:
-                torch.save(state,'{}/checkpoint_{}_{:04d}.pth.tar'.format(save_pth, cfg.env_name, epoch))
+                torch.save(state,'{}/ckpt_{}_{:04d}.pth.tar'.format(save_pth, cfg.env_name, epoch))
       
 def train(train_loader, model, optimizer, scaler, epoch, cfg):
     batch_time = AverageMeter('Time', ':6.3f')
