@@ -239,7 +239,7 @@ def adjust_learning_rate(optimizer, cfg, step):
         param_group['lr'] = lr
 
 def adjust_momentum(model, cfg, step):
-    if cfg.method == 'ins_m':
+    if cfg.method == 'intl_m':
         model.module.m = 1. - 0.5 * (1. + math.cos(math.pi * step / cfg.total_steps)) * (1. - cfg.m)
 
 if __name__ == '__main__':
