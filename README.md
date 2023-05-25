@@ -1,5 +1,9 @@
 # Modulate Your Spectrum in Self-Supervised Learning
 
+<p align="center">
+  <img width="800" src="scripts/ST.pdf">
+</p>
+
 This is a PyTorch implementation of the paper.
 
 ## Requirements
