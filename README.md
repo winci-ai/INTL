@@ -1,10 +1,3 @@
-<style>
-table
-{
-    margin: auto;
-}
-</style>
-
 # Modulate Your Spectrum in Self-Supervised Learning
 
 This is a PyTorch implementation of the paper.
@@ -16,28 +9,14 @@ This is a PyTorch implementation of the paper.
 ## Experiments on Standard SSL Benchmark
 The code includes experiments in section 5. 
 
-### Evaluation for Classification
-The datasets include ImageNet, CIFAR-10, CIFAR-100 and ImageNet-100.
-
-The unsupervised pretraining scripts for small and medium datasets are shown in `scripts/base.sh`
-
-The results are shown in the following table:
-
-| Method  |CIFAR-10 | CIFAR-100 |STL-10 | Tiny-ImageNet |
-| :--------:  |:-------------:| :--: | :--: | :--: |
-|   | **top-1** &nbsp; **5-nn** |**top-1** &nbsp; **5-nn**  |**top-1** &nbsp; **5-nn** | **top-1** &nbsp; **5-nn** |
-| CW-RGP 2|  91.92 &nbsp;   89.54 |  67.51 &nbsp;   57.35  |90.76 &nbsp;   87.34|  49.23 &nbsp;   34.04 |
-| CW-RGP 4|  92.47 &nbsp; 90.74| 68.26 &nbsp;  58.67 |92.04 &nbsp; 88.95| 50.24 &nbsp;  35.99 |
-
 ### Evaluation on ImageNet
 
-#### Pre-trained Models
-Our pretrained ResNet-50 models (using multi-crop and EMA):
+Our pretrained ResNet-50 INTL (using multi-crop and EMA):
 
 <table>
   <tr>
     <th>epochs</th>
-    <th>batch size</th>
+    <th>bs</th>
     <th>top-1 acc</th>
     <th colspan="5">download</th>
   </tr>
@@ -82,42 +61,49 @@ Our pretrained ResNet-50 models (using multi-crop and EMA):
     <td><a href="https://drive.google.com/file/d/1lEDwwr5qbPpQM71loIxXbDx-biCQsDii/view?usp=drive_link">lincls logs</a></td>
   </tr>
 </table>
+
+Our pretrained ResNet-50 INTL (without multi-crop or EMA):
+
+<table>
+  <tr>
+    <th>epochs</th>
+    <th>bs</th>
+    <th>top-1 acc</th>
+    <th colspan="5">download</th>
+  </tr>
+  <tr>
+    <td>800</td>
+    <td>256</td>
+    <td>73.1%</td>
+    <td><a href="scripts/intl_ep800.sh">script</a></td>
+    <td><a href="https://drive.google.com/file/d/1wkc1q6Pb-ZOLrBA36TyYsrOQPz8zLKtm/view?usp=drive_link">ResNet-50</a></td>
+    <td><a href="https://drive.google.com/file/d/19rpjQkG3op-cclvj5214a3roQZvcUT_c/view?usp=drive_link">full checkpoint</a></td>
+    <td><a href="https://drive.google.com/file/d/1MrBE_pwrq1hVKuc2307sqWT30kXvywY2/view?usp=drive_link">lincls checkpoint</a></td>
+    <td><a href="https://drive.google.com/file/d/1WAaFPU9i-Riw5y05wpoN-1dasPNc17K6/view?usp=drive_link">lincls logs</a></td>
+  </tr>
+</table>
+
 You can choose to download either the weights of the pretrained ResNet-50 network or the full checkpoint, which also contains the weights of the projection and the state of the optimizer.
 
-#### INTL Training
+### Evaluation on small and medium size datasets.
+The datasets include CIFAR-10, CIFAR-100 and ImageNet-100.
 
-Install PyTorch and download ImageNet by following the instructions in the [requirements](https://github.com/pytorch/examples/tree/master/imagenet#requirements) section of the PyTorch ImageNet training example. The code has been developed for PyTorch version 1.7.1 and torchvision version 0.8.2, but it should work with other versions just as well. 
+The unsupervised pretraining scripts for small and medium datasets are shown in `scripts/base.sh`
 
-Our best model is obtained by running the following command:
+The results are shown in the following table:
 
-```
-python main.py --data_path /path/to/imagenet/ 
-```
 
-Training time is approximately 7 days on 16 v100 GPUs.
+| Method  |CIFAR-10 | CIFAR-100 | ImageNet-100 | 
+| :--------:  |:-------------:| :--: | :--: | 
+|   | **top-1** &nbsp; **5-nn** &nbsp; **top-5**|**top-1** &nbsp; **5-nn** &nbsp; **top-5** |**top-1** &nbsp; **5-nn** &nbsp; **top-5**| 
+| INTL|  92.60 &nbsp;  90.03 &nbsp; 99.80|  70.88 &nbsp; 61.90 &nbsp;92.13 |81.68 &nbsp;  73.46&nbsp;95.42|
 
-### Evaluation: Linear Classification
-
-Train a linear probe on the representations learned by Barlow Twins. Freeze the weights of the resnet and use the entire ImageNet training set.
-
-```
-python evaluate.py /path/to/imagenet/ /path/to/checkpoint/resnet50.pth --lr-classifier 0.3
-```
-
-### Evaluation: Semi-supervised Learning
-
-Train a linear probe on the representations learned by Barlow Twins. Finetune the weights of the resnet and use a subset of the ImageNet training set.
-
-```
-python evaluate.py /path/to/imagenet/ /path/to/checkpoint/resnet50.pth --weights finetune --train-perc 1 --epochs 20 --lr-backbone 0.005 --lr-classifier 0.5 --weight-decay 0 --checkpoint-dir ./checkpoint/semisup/
-```
 
 ### Transferring to Object Detection
 Same as [MoCo](https://github.com/facebookresearch/moco) for object detection transfer, please see [moco/detection](https://github.com/facebookresearch/moco/tree/master/detection).
 
-Transfer learning results of CW-RGP (200-epochs pretrained on ImageNet):
+Transfer learning results of INTL (200-epochs pretrained on ImageNet):
 | downstream task |$AP_{50}$| $AP$ | $AP_{75}$ |ckpt|log|
 | :----:  |:------:| :--: | :--: | :--: | :--: |
-| VOC 07+12 detection  | $82.2_{±0.07}$|$57.2_{±0.10}$ | $63.8_{±0.11}$| [voc_ckpt](https://drive.google.com/file/d/1yUnBCCqcjBRhFJMi8R-cvnTIgqCUh7YB/view?usp=sharing)|[voc_log](https://drive.google.com/file/d/1tKUmBHUQiNZauiZ3Oe4-6YMsRG9iqILp/view?usp=sharing)|
-| COCO detection| $60.5_{±0.28}$|$40.7_{±0.14}$ | $44.1_{±0.14}$|[coco_ckpt](https://drive.google.com/file/d/1_QGsK9Uvk60yeAgpMYChUB7QKc9kahTJ/view?usp=sharing) |[coco_log](https://drive.google.com/file/d/1ywNNEHGdX-ecztQV9nDFWN91Mu5cP1h6/view?usp=sharing)|
-| COCO instance seg.| $57.3_{±0.16}$|$35.5_{±0.12}$ | $37.9_{±0.14}$|[coco_ckpt](https://drive.google.com/file/d/1_QGsK9Uvk60yeAgpMYChUB7QKc9kahTJ/view?usp=sharing) | [coco_log](https://drive.google.com/file/d/1ywNNEHGdX-ecztQV9nDFWN91Mu5cP1h6/view?usp=sharing)|
+| COCO detection| $61.2_{±0.08}$|$41.2_{±0.12}$ | $44.7_{±0.19}$|[coco_ckpt](https://drive.google.com/file/d/1W9IYeNvNmCDCDK3cSgYLZDogm0c1ijuQ/view?usp=drive_link) |[coco_log](https://drive.google.com/file/d/15dfEx1DG-f8mmQm4wnh8XrMdQE3NvyOa/view?usp=drive_link)|
+| COCO instance seg.| $57.8_{±0.04}$|$35.7_{±0.05}$ | $38.1_{±0.12}$|[coco_ckpt](https://drive.google.com/file/d/1W9IYeNvNmCDCDK3cSgYLZDogm0c1ijuQ/view?usp=drive_link) | [coco_log](https://drive.google.com/file/d/15dfEx1DG-f8mmQm4wnh8XrMdQE3NvyOa/view?usp=drive_link)|
