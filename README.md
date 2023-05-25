@@ -1,3 +1,10 @@
+<style>
+table
+{
+    margin: auto;
+}
+</style>
+
 # Modulate Your Spectrum in Self-Supervised Learning
 
 This is a PyTorch implementation of the paper.
@@ -114,11 +121,3 @@ Transfer learning results of CW-RGP (200-epochs pretrained on ImageNet):
 | VOC 07+12 detection  | $82.2_{±0.07}$|$57.2_{±0.10}$ | $63.8_{±0.11}$| [voc_ckpt](https://drive.google.com/file/d/1yUnBCCqcjBRhFJMi8R-cvnTIgqCUh7YB/view?usp=sharing)|[voc_log](https://drive.google.com/file/d/1tKUmBHUQiNZauiZ3Oe4-6YMsRG9iqILp/view?usp=sharing)|
 | COCO detection| $60.5_{±0.28}$|$40.7_{±0.14}$ | $44.1_{±0.14}$|[coco_ckpt](https://drive.google.com/file/d/1_QGsK9Uvk60yeAgpMYChUB7QKc9kahTJ/view?usp=sharing) |[coco_log](https://drive.google.com/file/d/1ywNNEHGdX-ecztQV9nDFWN91Mu5cP1h6/view?usp=sharing)|
 | COCO instance seg.| $57.3_{±0.16}$|$35.5_{±0.12}$ | $37.9_{±0.14}$|[coco_ckpt](https://drive.google.com/file/d/1_QGsK9Uvk60yeAgpMYChUB7QKc9kahTJ/view?usp=sharing) | [coco_log](https://drive.google.com/file/d/1ywNNEHGdX-ecztQV9nDFWN91Mu5cP1h6/view?usp=sharing)|
-
-
-<style>
-table
-{
-    margin: auto;
-}
-</style>
