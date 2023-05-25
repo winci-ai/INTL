@@ -92,6 +92,38 @@ The unsupervised pretraining scripts for small and medium datasets are shown in 
 
 The results are shown in the following table:
 
+<table>
+  <tr>
+    <th>Method</th>
+    <th colspan="3">CIFAR-10</th>
+    <th colspan="3">CIFAR-100</th>
+    <th colspan="3">ImageNet-100</th>S
+  </tr>
+  <tr>
+    <td> </td>
+    <td>top-1</td>
+    <td>5-nn</td>
+    <td>top-5</td>
+    <td>top-1</td>
+    <td>5-nn</td>
+    <td>top-5</td>
+    <td>top-1</td>
+    <td>5-nn</td>
+    <td>top-5</td>
+  </tr>
+  <tr>
+    <td>INTL</td>
+    <td>92.60</td>
+    <td>90.03</td>
+    <td>99.80</td>
+    <td>70.88</td>
+    <td>61.90</td>
+    <td>92.13</td>
+    <td>81.68</td>
+    <td>73.46</td>
+    <td>95.42</td>
+  </tr>
+</table>
 
 | Method  |CIFAR-10 | CIFAR-100 | ImageNet-100 | 
 | :--------:  |:-------------:| :--: | :--: | 
