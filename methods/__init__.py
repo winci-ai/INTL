@@ -5,8 +5,8 @@ METHOD_LIST = ["intl","intl_m"]
 
 def get_method(name):
     assert name in METHOD_LIST
-    if name == "ins":
+    if name == "intl":
         return INTL
-    if name == "ins_m":
+    if name == "intl_m":
         return INTL_M
  
