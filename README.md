@@ -132,7 +132,7 @@ The results are shown in the following table:
 </table>
 
 ### Transferring to Object Detection
-Same as [MoCo](https://github.com/facebookresearch/moco) for object detection transfer, please see [moco/detection](https://github.com/facebookresearch/moco/tree/master/detection).
+Same as [MoCo](https://github.com/facebookresearch/moco) for object detection transfer, please see [./detection](https://github.com/winci-ai/INTL/tree/main/detection).
 
 Transfer learning results of INTL (200-epochs pretrained on ImageNet):
 | downstream task |$AP_{50}$| $AP$ | $AP_{75}$ |ckpt|log|
