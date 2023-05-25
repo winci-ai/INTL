@@ -88,9 +88,7 @@ You can choose to download either the weights of the pretrained ResNet-50 networ
 ### Evaluation on small and medium size datasets.
 The datasets include CIFAR-10, CIFAR-100 and ImageNet-100.
 
-The unsupervised pretraining scripts for small and medium datasets are shown in `scripts/base.sh`
-
-The results are shown in the following table:
+The results and unsupervised pretraining scripts are shown in the following table:
 
 <table>
   <tr>
