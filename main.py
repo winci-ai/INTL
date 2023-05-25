@@ -14,7 +14,7 @@ import torch.utils.data
 import torch.utils.data.distributed
 from cfg import get_cfg
 from methods import get_method
-from src.transform import Augmentations, ImageNetTransform, MultiCrops
+from src.transform import Augmentations, ImageNetTransform, Multi_Crop
 from src.meter import AverageMeter, ProgressMeter
 import wandb
 import torchvision.datasets as datasets
@@ -95,7 +95,7 @@ def main_worker(gpu, ngpus_per_node, cfg):
         model = model.cuda(cfg.gpu)
     else:
         model = torch.nn.DataParallel(model).cuda()
-    print(model) 
+    print(model)
 
     param_weights = []
     param_biases = []
@@ -130,7 +130,7 @@ def main_worker(gpu, ngpus_per_node, cfg):
 
     cudnn.benchmark = True
 
-    cfg = MultiCrops(cfg)
+    cfg = Multi_Crop(cfg)
 
     # Data loading code 
     assert len(cfg.nmb_crops) == len(cfg.gaussian_prob)

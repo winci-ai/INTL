@@ -107,33 +107,13 @@ class ImageNetTransform(BaseTransform):
             ]
         )
 
-def MultiCrops(cfg):
-
-    if cfg.multicrop == 1:
-        print("=> apply multiple 4 crops: 192, 160, 128, 96")
-        cfg.nmb_crops = [1, 1, 1, 1]
-        cfg.crops_size = [192, 160, 128, 96]
-        cfg.min_scale_crops = [0.2, 0.167, 0.133, 0.1]
-        cfg.max_scale_crops = [1.0, 0.833, 0.667, 0.5]
-        cfg.gaussian_prob = [0.5, 0.5, 0.5, 0.5]
-        cfg.solarization_prob = [0.1, 0.1, 0.1, 0.1]
-
-    if cfg.multicrop == 2:
-        print("=> apply multiple 5 crops: 224, 192, 160, 128, 96")
-        cfg.nmb_crops = [1, 1, 1, 1, 1]
-        cfg.crops_size = [224, 192, 160, 128, 96]
-        cfg.min_scale_crops = [0.2, 0.171, 0.143, 0.114, 0.086]
-        cfg.max_scale_crops = [1.0, 0.857, 0.714, 0.571, 0.429]
-        cfg.gaussian_prob = [0.5, 0.5, 0.5, 0.5, 0.5]
-        cfg.solarization_prob = [0.1, 0.1, 0.1, 0.1, 0.1]
-
-    if cfg.multicrop == 3:
-        print("=> apply multiple 6 crops: 2 x 224, 192, 160, 128, 96")
+def Multi_Crop(cfg):
+    if cfg.multi_crop:
+        print("=> apply multi-crop: 2 x 224, 192, 160, 128, 96")
         cfg.nmb_crops = [2, 1, 1, 1, 1]
         cfg.crops_size = [224, 192, 160, 128, 96]
         cfg.min_scale_crops = [0.2, 0.171, 0.143, 0.114, 0.086]
         cfg.max_scale_crops = [1.0, 0.857, 0.714, 0.571, 0.429]
         cfg.gaussian_prob = [0.5, 0.5, 0.5, 0.5, 0.5]
         cfg.solarization_prob = [0.1, 0.1, 0.1, 0.1, 0.1]
-
     return cfg

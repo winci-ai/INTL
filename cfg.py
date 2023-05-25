@@ -26,7 +26,7 @@ def get_cfg():
     parser.add_argument('--start-epoch', default=0, type=int, metavar='N',
                     help='manual epoch number (useful on restarts)')
     parser.add_argument(
-        "--bs", type=int, default=512, help="train bs",
+        "--bs", type=int, default=256, help="train bs",
     )
     parser.add_argument('--lr', '--learning-rate', default=0.5, type=float,
                     metavar='LR', help='initial (base) learning rate for train', dest='lr')
@@ -108,7 +108,7 @@ def get_cfg():
     parser.add_argument("--solarization_prob", type=float, default=[0.0, 0.2], nargs="+",
                     help="gaussian_prob (example: [0.1, 0.1, 0.1, 0.1])")
     
-    parser.add_argument('--multicrop', type=int, default=0, choices=[0,1,2,3], help='easy multicrop')
+    parser.add_argument('--multi-crop', dest="multi_crop", action="store_true", help='using multi-crop')
 
     parser.add_argument(
         "--w_eps", type=float, default=0, help="eps for stability for whitening"
@@ -122,7 +122,7 @@ def get_cfg():
     parser.add_argument("--emb", type=int, default=8192, help="embedding size")
 
     parser.add_argument(
-        "--m", type=float, default=0.996, help="ins_momentum"
+        "--m", type=float, default=0.996, help="intl_momentum"
     )
     
     parser.add_argument("--dataset", type=str, choices=DS_LIST, default="imagenet")
