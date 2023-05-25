@@ -94,13 +94,11 @@ The results are shown in the following table:
 
 <table>
   <tr>
-    <th>Method</th>
     <th colspan="4">CIFAR-10</th>
     <th colspan="4">CIFAR-100</th>
     <th colspan="4">ImageNet-100</th>
   </tr>
   <tr>
-    <td> </td>
     <td>top-1</td>
     <td>5-nn</td>
     <td>top-5</td>
@@ -115,7 +113,6 @@ The results are shown in the following table:
     <td>script</td>
   </tr>
   <tr>
-    <td>INTL</td>
     <td>92.60</td>
     <td>90.03</td>
     <td>99.80</td>
