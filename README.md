@@ -1,7 +1,7 @@
 # Modulate Your Spectrum in Self-Supervised Learning
 
 <p align="center">
-  <img width="800" src="scripts/ST.png">
+  <img width="700" src="scripts/ST.png">
 </p>
 
 This is a PyTorch implementation of the paper.
