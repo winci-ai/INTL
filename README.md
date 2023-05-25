@@ -38,7 +38,7 @@ Our pretrained ResNet-50 models (using multi-crop and EMA):
     <td>100</td>
     <td>256</td>
     <td>73.5%</td>
-    <td><a src="scripts/intl_ep100_multi-crop_ema.sh">script</a></td>
+    <td><a href="scripts/intl_ep100_multi-crop_ema.sh">script</a></td>
     <td><a href="https://drive.google.com/file/d/1DZVKlqWaRJ7Xkq9g4rDoVOfClRtIa0Uk/view?usp=drive_link">ResNet-50</a></td>
     <td><a href="https://drive.google.com/file/d/1zemhf-UbzcmpteAB5nKEv7r4dWbYINLP/view?usp=drive_link">full checkpoint</a></td>
     <td><a href="https://drive.google.com/file/d/1khGuJ37B6yEl1ME4Bc9WYikO3Hh8a7vK/view?usp=drive_links">lincls checkpoint</a></td>
@@ -48,7 +48,7 @@ Our pretrained ResNet-50 models (using multi-crop and EMA):
     <td>200</td>
     <td>256</td>
     <td>75.2%</td>
-    <td><a src="scripts/intl_ep200_multi-crop_ema.sh">script</a></td>
+    <td><a href="scripts/intl_ep200_multi-crop_ema.sh">script</a></td>
     <td><a href="https://drive.google.com/file/d/1H6i__9IYkX4VYcMILY-8JgHQY1m_aUlP/view?usp=drive_link">ResNet-50</a></td>
     <td><a href="https://drive.google.com/file/d/1MQlwD1Ep6oMCpDrz3T7Ih4DCRe9fwGg3/view?usp=drive_link">full checkpoint</a></td>
     <td><a href="https://drive.google.com/file/d/1WmtWxULXPiTPq_NWTv_ceXGouUCoVAX-/view?usp=drive_link">lincls checkpoint</a></td>
@@ -58,7 +58,7 @@ Our pretrained ResNet-50 models (using multi-crop and EMA):
     <td>400</td>
     <td>256</td>
     <td>76.1%</td>
-    <td><a src="scripts/intl_ep400_multi-crop_ema.sh">script</a></td>
+    <td><a href="scripts/intl_ep400_multi-crop_ema.sh">script</a></td>
     <td><a href="https://drive.google.com/file/d/1CsowRCBNL6zTvjXe2PKhVOiDIGP-2to1/view?usp=drive_link">ResNet-50</a></td>
     <td><a href="https://drive.google.com/file/d/1PUoGL0fr-WbtWkbk9gopSr7vO_kA2S9z/view?usp=drive_link">full checkpoint</a></td>
     <td><a href="https://drive.google.com/file/d/1M40oIQFvMYXZCeOMba23fqIUxmYDCQTg/view?usp=drive_link">lincls checkpoint</a></td>
@@ -68,7 +68,7 @@ Our pretrained ResNet-50 models (using multi-crop and EMA):
     <td>800</td>
     <td>256</td>
     <td>76.6%</td>
-    <td><a src="scripts/intl_ep800_multi-crop_ema.sh">script</a></td>
+    <td><a href="scripts/intl_ep800_multi-crop_ema.sh">script</a></td>
     <td><a href="https://drive.google.com/file/d/1zHZPpHjMKnzwHyOD93cuRO0o8QMbWnxV/view?usp=drive_link">ResNet-50</a></td>
     <td><a href="https://drive.google.com/file/d/1wLN1I4kXJtbmuRH1HKHE5snp6S-MtNLR/view?usp=drive_link">full checkpoint</a></td>
     <td><a href="https://drive.google.com/file/d/1wKeEKcGojfHYhdLh24f8VhmY6ZXuD8Fw/view?usp=drive_link">lincls checkpoint</a></td>
