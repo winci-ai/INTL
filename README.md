@@ -62,7 +62,7 @@ Our pretrained ResNet-50 INTL (using multi-crop and EMA):
     <td><a href="https://drive.google.com/file/d/1zHZPpHjMKnzwHyOD93cuRO0o8QMbWnxV/view?usp=drive_link">ResNet-50</a></td>
     <td><a href="https://drive.google.com/file/d/1wLN1I4kXJtbmuRH1HKHE5snp6S-MtNLR/view?usp=drive_link">full checkpoint</a></td>
     <td><a href="https://drive.google.com/file/d/1wKeEKcGojfHYhdLh24f8VhmY6ZXuD8Fw/view?usp=drive_link">lincls checkpoint</a></td>
-    <td><a href="https://drive.google.com/file/d/1lEDwwr5qbPpQM71loIxXbDx-biCQsDii/view?usp=drive_link">lincls logs</a></td>
+    <td><a href="https://drive.google.com/file/d/1Lbv_GZzsfwNjHjlp9yyWeSh6-DAp_qQP/view?usp=drive_link">lincls logs</a></td>
   </tr>
 </table>
 
