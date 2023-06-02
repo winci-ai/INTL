@@ -11,11 +11,9 @@ def get_cfg():
 
     """ generates configuration from user input in console """
     parser = argparse.ArgumentParser(description="")
-    parser.add_argument('-a', '--arch', metavar='ARCH', default='resnet50',
-                    choices=model_names,
-                    help='model architecture: ' +
-                        ' | '.join(model_names) +
-                        ' (default: resnet50)')
+    parser.add_argument('-a', '--arch', metavar='ARCH', default='resnet18',
+                    help='model architecture (e.g. resnet18, resnet50, resnet200, resnet50x2)')
+
     parser.add_argument('-j', '--workers', default=16, type=int, metavar='N',
                     help='number of data loading workers (default: 32)')
     parser.add_argument('--epochs', default=100, type=int, metavar='N',
@@ -61,16 +59,7 @@ def get_cfg():
 
     parser.add_argument('--seed', default=None, type=int,
                     help='seed for initializing training. ')
-
-    parser.add_argument('--gpu', default=None, type=int,
-                    help='GPU id to use.')
-                    
-    parser.add_argument('--multiprocessing-distributed','--md', action='store_true',
-                    help='Use multi-processing distributed training to launch '
-                         'N processes per node, which has N GPUs. This is the '
-                         'fastest way to use PyTorch for either single node or '
-                         'multi node data parallel training')
-                         
+    
     parser.add_argument(
         "--method", type=str, choices=METHOD_LIST, default="intl", help="loss type",
     )

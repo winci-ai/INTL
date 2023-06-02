@@ -36,46 +36,27 @@ def main():
                       'You may see unexpected behavior when restarting '
                       'from checkpoints.')
 
-    if cfg.gpu is not None:
-        warnings.warn('You have chosen a specific GPU. This will completely '
-                      'disable data parallelism.')
-
-    if cfg.dist_url == "env://" and cfg.world_size == -1:
-        cfg.world_size = int(os.environ["WORLD_SIZE"])
-    print('world-size:',cfg.world_size)
-    cfg.distributed = cfg.world_size > 1 or cfg.multiprocessing_distributed
-
     ngpus_per_node = torch.cuda.device_count()
-    print('ngpus_per_node:',ngpus_per_node)
-    if cfg.multiprocessing_distributed:
-        cfg.world_size = ngpus_per_node * cfg.world_size
-        mp.spawn(main_worker, nprocs=ngpus_per_node, args=(ngpus_per_node, cfg))
-    else:
-        # Simply call main_worker function
-        main_worker(cfg.gpu, ngpus_per_node, cfg)
-
+    cfg.world_size = ngpus_per_node * cfg.world_size
+    mp.spawn(main_worker, nprocs=ngpus_per_node, args=(ngpus_per_node, cfg))
+ 
 def main_worker(gpu, ngpus_per_node, cfg):
     cfg.gpu = gpu
     # suppress printing if not master
-    if cfg.multiprocessing_distributed and cfg.gpu != 0:
+    if cfg.gpu != 0:
         def print_pass(*cfg):
             pass
         builtins.print = print_pass
     cfg.wandb = 'intl_cifar'
-    if cfg.gpu == 0 or cfg.gpu is None:
+
+    if cfg.gpu == 0:
         wandb.init(project=cfg.wandb, name = cfg.env_name, config=cfg)
 
-    if cfg.gpu is not None:
-        print("Use GPU: {} for training".format(cfg.gpu))
-
-    if cfg.distributed:
-        if cfg.dist_url == "env://" and cfg.rank == -1:
-            cfg.rank = int(os.environ["RANK"])
-        if cfg.multiprocessing_distributed:
-            cfg.rank = cfg.rank * ngpus_per_node + gpu
-        dist.init_process_group(backend=cfg.dist_backend, init_method=cfg.dist_url,
+   
+    cfg.rank = cfg.rank * ngpus_per_node + gpu
+    dist.init_process_group(backend=cfg.dist_backend, init_method=cfg.dist_url,
                                 world_size=cfg.world_size, rank=cfg.rank)
-        torch.distributed.barrier()
+    torch.distributed.barrier()
     # create model
     print("=> creating model '{}'".format(cfg.arch))
     model = get_method(cfg.method)(cfg)
@@ -83,24 +64,13 @@ def main_worker(gpu, ngpus_per_node, cfg):
     # infer learning rate before changing batch size
     cfg.base_lr = cfg.lr * cfg.bs / 256
 
-    if cfg.distributed:
-        # Apply SyncBN
-        model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
-        if cfg.gpu is not None:
-            print('gpu:',cfg.gpu)
-            torch.cuda.set_device(cfg.gpu)
-            model.cuda(cfg.gpu)
-            cfg.bs = int(cfg.bs / ngpus_per_node)
-            cfg.workers = int((cfg.workers + ngpus_per_node - 1) / ngpus_per_node)
-            model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[cfg.gpu])
-        else:
-            model.cuda()
-            model = torch.nn.parallel.DistributedDataParallel(model)
-    elif cfg.gpu is not None:
-        torch.cuda.set_device(cfg.gpu)
-        model = model.cuda(cfg.gpu)
-    else:
-        model.cuda()
+    # Apply SyncBN
+    model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
+    torch.cuda.set_device(cfg.gpu)
+    model.cuda(cfg.gpu)
+    cfg.bs = int(cfg.bs / ngpus_per_node)
+    cfg.workers = int((cfg.workers + ngpus_per_node - 1) / ngpus_per_node)
+    model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[cfg.gpu])
 
     print(model) 
 
@@ -113,12 +83,10 @@ def main_worker(gpu, ngpus_per_node, cfg):
     if cfg.resume:
         if os.path.isfile(cfg.resume):
             print("=> loading checkpoint '{}'".format(cfg.resume))
-            if cfg.gpu is None:
-                checkpoint = torch.load(cfg.resume)
-            else:
-                # Map model to be loaded to specified single gpu.
-                loc = 'cuda:{}'.format(cfg.gpu)
-                checkpoint = torch.load(cfg.resume, map_location=loc)
+
+            # Map model to be loaded to specified single gpu.
+            loc = 'cuda:{}'.format(cfg.gpu)
+            checkpoint = torch.load(cfg.resume, map_location=loc)
             cfg.start_epoch = checkpoint['epoch']
             model.load_state_dict(checkpoint['state_dict'])
             optimizer.load_state_dict(checkpoint['optimizer'])
@@ -141,38 +109,31 @@ def main_worker(gpu, ngpus_per_node, cfg):
         train_dataset = CIFAR10(root=cfg.data_path, train=True, transform=t, download=True)
         ds = CIFAR10_clf(cfg)
 
-    if cfg.distributed:
-        train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset)
-    else:
-        train_sampler = None
+    train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset)
 
-    
     train_loader = torch.utils.data.DataLoader(
-        train_dataset, batch_size=cfg.bs, shuffle=(train_sampler is None),
-        num_workers=cfg.workers, pin_memory=True, sampler=train_sampler, drop_last=True)
+        train_dataset, batch_size=cfg.bs, num_workers=cfg.workers, 
+        pin_memory=True, sampler=train_sampler, drop_last=True)
 
     cfg.total_steps = cfg.epochs * len(train_loader)
     cfg.warmup_steps = cfg.warmup_eps * len(train_loader)
     print(cfg)
     
     for epoch in range(cfg.start_epoch, cfg.epochs):
-        if cfg.distributed:
-            train_sampler.set_epoch(epoch)
-
+        train_sampler.set_epoch(epoch)
         loss = train(train_loader, model, optimizer, epoch, cfg)
 
         if (epoch + 1) % cfg.eval_every == 0:
-            if cfg.gpu == 0 or cfg.gpu is None:
+            if cfg.gpu == 0:
                 acc_knn, acc = get_acc(model, ds, cfg)
                 print("acc:",acc[1], "acc_5:",acc[5], "acc_knn:",acc_knn)
                 wandb.log({"acc": acc[1], "acc_5": acc[5], "acc_knn": acc_knn}, commit=False)
 
-        if cfg.gpu == 0 or cfg.gpu is None:
+        if cfg.gpu == 0:
             wandb.log({"learning_rate": optimizer.param_groups[0]['lr'],
                             "loss": loss, "ep": epoch})
  
-        if not cfg.multiprocessing_distributed or (cfg.multiprocessing_distributed
-                and cfg.rank % ngpus_per_node == 0):
+        if cfg.rank % ngpus_per_node == 0:
             save_pth = './ckpt'
             if not os.path.exists(save_pth):
                 os.makedirs(save_pth)

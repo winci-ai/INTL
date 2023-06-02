@@ -14,7 +14,6 @@ class BaseMethod(nn.Module):
         self.projection = get_projection(self.out_size, cfg)
         self.emb_size = cfg.emb
         self.axis = cfg.axis
-        self.dist = cfg.distributed
         self.loss_f = norm_mse_loss
         self.trade_off = cal_trade_off(cfg)
         self.m = 0

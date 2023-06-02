@@ -9,8 +9,7 @@ class INTL_M(BaseMethod):
 
     def __init__(self, cfg):
         super().__init__(cfg)
-        self.IterNorm = Whitening2dIterNorm(dist=cfg.distributed, eps=cfg.w_eps,
-                                            axis=cfg.axis, iterations=cfg.iters)
+        self.IterNorm = Whitening2dIterNorm(axis=cfg.axis, iterations=cfg.iters)
 
         self.momentum_backbone = copy.deepcopy(self.backbone)
         self.momentum_projection = copy.deepcopy(self.projection)

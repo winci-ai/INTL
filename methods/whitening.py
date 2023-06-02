@@ -4,21 +4,14 @@ import torch.nn as nn
 import torch.distributed as dist
 
 class Whitening2d(nn.Module):
-    def __init__(self,
-                 dist=False,
-                 eps=0,
-                 axis=0,
-                 iterations=4):
+    def __init__(self, axis=0, iterations=4):
         super(Whitening2d, self).__init__()
-        self.eps = eps
-        self.dist = dist
         self.axis = axis
         self.iterations = iterations
 
     def forward(self, x):
         assert self.axis in (0,1), "axis must be in (channel,batch) !"
-        if self.dist:
-            x = torch.cat(FullGatherLayer.apply(x), dim=0)
+        x = torch.cat(FullGatherLayer.apply(x), dim=0)
         
         w_dim = x.size(-1)
         m = x.mean(0 if self.axis == 1 else 1)
@@ -50,8 +43,8 @@ class Whitening2d(nn.Module):
         pass
 
     def extra_repr(self):
-        return "distributed={}, eps={}, axis={}, iterations={}".format(
-            self.dist, self.eps, self.axis, self.iterations
+        return "axis={}, iterations={}".format(
+            self.axis, self.iterations
         )
 
 class Whitening2dIterNorm(Whitening2d):

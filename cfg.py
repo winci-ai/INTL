@@ -5,17 +5,11 @@ from methods import METHOD_LIST
 DS_LIST = ["in100","imagenet"]
 
 def get_cfg():
-    model_names = sorted(name for name in models.__dict__
-    if name.islower() and not name.startswith("__")
-    and callable(models.__dict__[name]))
 
     """ generates configuration from user input in console """
     parser = argparse.ArgumentParser(description="")
     parser.add_argument('-a', '--arch', metavar='ARCH', default='resnet50',
-                    choices=model_names,
-                    help='model architecture: ' +
-                        ' | '.join(model_names) +
-                        ' (default: resnet50)')
+                    help='model architecture (e.g. resnet18, resnet50, resnet200, resnet50x2)')
 
     parser.add_argument('-j', '--workers', default=24, type=int, metavar='N',
                     help='number of data loading workers (default: 32)')
@@ -61,14 +55,7 @@ def get_cfg():
     parser.add_argument('--seed', default=None, type=int,
                     help='seed for initializing training. ')
 
-    parser.add_argument('--gpu', default=None, type=int,
-                    help='GPU id to use.')
-
-    parser.add_argument("--no_md", dest="multiprocessing_distributed", action="store_false",
-                    help='Use multi-processing distributed training to launch '
-                         'N processes per node, which has N GPUs. This is the '
-                         'fastest way to use PyTorch for either single node or '
-                         'multi node data parallel training')
+    
     parser.add_argument(
         "--method", type=str, choices=METHOD_LIST, default="intl", help="loss type",
     )
