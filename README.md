@@ -1,7 +1,7 @@
 # Modulate Your Spectrum in Self-Supervised Learning
 
 <p align="center">
-  <img width="400" src="scripts/ST.png">
+  <img width="500" src="scripts/ST.png">
 </p>
 
 This is an official implementation of [INTL](https://arxiv.org/abs/2305.16789).
