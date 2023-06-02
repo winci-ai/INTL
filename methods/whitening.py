@@ -25,8 +25,7 @@ class Whitening2d(nn.Module):
             eye = torch.eye(x.size(0)).type(xn.type()).reshape(1, x.size(0), x.size(0)).repeat(1, 1, 1)
             xn_g = xn.reshape(-1, 1, w_dim).permute(1, 2, 0)
 
-        f_cov = torch.bmm(xn_g.permute(0, 2, 1), xn_g) / (xn_g.shape[1] - 1) 
-        sigma = (1 - self.eps) * f_cov + self.eps * eye
+        sigma = torch.bmm(xn_g.permute(0, 2, 1), xn_g) / (xn_g.shape[1] - 1) 
 
         matrix = self.whiten_matrix(sigma, eye)  
         decorrelated = torch.bmm(xn_g, matrix)

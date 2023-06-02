@@ -98,9 +98,6 @@ def get_cfg():
     parser.add_argument('--multi-crop', dest="multi_crop", action="store_true", help='using multi-crop')
 
     parser.add_argument(
-        "--w_eps", type=float, default=0, help="eps for stability for whitening"
-    )
-    parser.add_argument(
         "--projection_layers", type=int, default=3, help="number of FC layers in projection"
     )
     parser.add_argument(
