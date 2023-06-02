@@ -1,10 +1,19 @@
 # Modulate Your Spectrum in Self-Supervised Learning
 
 <p align="center">
-  <img width="700" src="scripts/ST.png">
+  <img width="400" src="scripts/ST.png">
 </p>
 
-This is a PyTorch implementation of the paper.
+This is an official implementation of [INTL](https://arxiv.org/abs/2305.16789).
+
+```
+@article{weng2023modulate,
+  title={Modulate Your Spectrum in Self-Supervised Learning},
+  author={Weng, Xi and Ni, Yunhao and Song, Tengwei and Luo, Jie and Anwer, Rao Muhammad and Khan, Salman and Khan, Fahad Shahbaz and Huang, Lei},
+  journal={arXiv preprint arXiv:2305.16789},
+  year={2023}
+}
+```
 
 ## Requirements
 - Install PyTorch ([pytorch.org](http://pytorch.org))
@@ -22,7 +31,7 @@ Our pretrained ResNet-50 INTL (using multi-crop and EMA):
     <th>epochs</th>
     <th>bs</th>
     <th>top-1 acc</th>
-    <th colspan="5">download</th>
+    <th colspan="4">download</th>
   </tr>
   <tr>
     <td>100</td>
@@ -32,7 +41,6 @@ Our pretrained ResNet-50 INTL (using multi-crop and EMA):
     <td><a href="https://drive.google.com/file/d/1DZVKlqWaRJ7Xkq9g4rDoVOfClRtIa0Uk/view?usp=drive_link">ResNet-50</a></td>
     <td><a href="https://drive.google.com/file/d/1zemhf-UbzcmpteAB5nKEv7r4dWbYINLP/view?usp=drive_link">full checkpoint</a></td>
     <td><a href="https://drive.google.com/file/d/1khGuJ37B6yEl1ME4Bc9WYikO3Hh8a7vK/view?usp=drive_links">lincls checkpoint</a></td>
-    <td><a href="https://drive.google.com/file/d/1y1HEOvlQxkqTfQXikBKOogM-df_EeRQs/view?usp=drive_link">lincls logs</a></td>
   </tr>
   <tr>
     <td>200</td>
@@ -42,7 +50,7 @@ Our pretrained ResNet-50 INTL (using multi-crop and EMA):
     <td><a href="https://drive.google.com/file/d/1H6i__9IYkX4VYcMILY-8JgHQY1m_aUlP/view?usp=drive_link">ResNet-50</a></td>
     <td><a href="https://drive.google.com/file/d/1MQlwD1Ep6oMCpDrz3T7Ih4DCRe9fwGg3/view?usp=drive_link">full checkpoint</a></td>
     <td><a href="https://drive.google.com/file/d/1WmtWxULXPiTPq_NWTv_ceXGouUCoVAX-/view?usp=drive_link">lincls checkpoint</a></td>
-    <td><a href="https://drive.google.com/file/d/1dEflhK2K79GoqPfizDxBUUoNwTDgSAMs/view?usp=drive_link">lincls logs</a></td>
+
   </tr>
   <tr>
     <td>400</td>
@@ -52,7 +60,6 @@ Our pretrained ResNet-50 INTL (using multi-crop and EMA):
     <td><a href="https://drive.google.com/file/d/1CsowRCBNL6zTvjXe2PKhVOiDIGP-2to1/view?usp=drive_link">ResNet-50</a></td>
     <td><a href="https://drive.google.com/file/d/1PUoGL0fr-WbtWkbk9gopSr7vO_kA2S9z/view?usp=drive_link">full checkpoint</a></td>
     <td><a href="https://drive.google.com/file/d/1M40oIQFvMYXZCeOMba23fqIUxmYDCQTg/view?usp=drive_link">lincls checkpoint</a></td>
-    <td><a href="https://drive.google.com/file/d/1Zl-nQPVzc-MRbs6u26nIaM4YA904blym/view?usp=drive_link">lincls logs</a></td>
   </tr>
   <tr>
     <td>800</td>
@@ -62,7 +69,6 @@ Our pretrained ResNet-50 INTL (using multi-crop and EMA):
     <td><a href="https://drive.google.com/file/d/1zHZPpHjMKnzwHyOD93cuRO0o8QMbWnxV/view?usp=drive_link">ResNet-50</a></td>
     <td><a href="https://drive.google.com/file/d/1wLN1I4kXJtbmuRH1HKHE5snp6S-MtNLR/view?usp=drive_link">full checkpoint</a></td>
     <td><a href="https://drive.google.com/file/d/1wKeEKcGojfHYhdLh24f8VhmY6ZXuD8Fw/view?usp=drive_link">lincls checkpoint</a></td>
-    <td><a href="https://drive.google.com/file/d/1Lbv_GZzsfwNjHjlp9yyWeSh6-DAp_qQP/view?usp=drive_link">lincls logs</a></td>
   </tr>
 </table>
 
@@ -73,7 +79,7 @@ Our pretrained ResNet-50 INTL (without multi-crop or EMA):
     <th>epochs</th>
     <th>bs</th>
     <th>top-1 acc</th>
-    <th colspan="5">download</th>
+    <th colspan="4">download</th>
   </tr>
   <tr>
     <td>800</td>
@@ -83,7 +89,6 @@ Our pretrained ResNet-50 INTL (without multi-crop or EMA):
     <td><a href="https://drive.google.com/file/d/1wkc1q6Pb-ZOLrBA36TyYsrOQPz8zLKtm/view?usp=drive_link">ResNet-50</a></td>
     <td><a href="https://drive.google.com/file/d/19rpjQkG3op-cclvj5214a3roQZvcUT_c/view?usp=drive_link">full checkpoint</a></td>
     <td><a href="https://drive.google.com/file/d/1MrBE_pwrq1hVKuc2307sqWT30kXvywY2/view?usp=drive_link">lincls checkpoint</a></td>
-    <td><a href="https://drive.google.com/file/d/1WAaFPU9i-Riw5y05wpoN-1dasPNc17K6/view?usp=drive_link">lincls logs</a></td>
   </tr>
 </table>
 
