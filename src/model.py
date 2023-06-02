@@ -11,7 +11,10 @@ def get_projection(out_size, cfg):
         x.append(nn.ReLU(inplace=True))
         in_size = cfg.projection_size
     x.append(nn.Linear(in_size, cfg.emb))
-    return nn.Sequential(*x)
+    projection = nn.Sequential(*x)
+    if cfg.distributed == False:
+        projection = nn.DataParallel(projection)
+    return projection
 
 def get_backbone(cfg):
     """ creates backbone E() by name and modifies it for dataset """
@@ -24,5 +27,6 @@ def get_backbone(cfg):
         backbone.maxpool = nn.Identity()
     out_size = backbone.fc.in_features
     backbone.fc = nn.Identity()
-
+    if cfg.distributed == False:
+        backbone = nn.DataParallel(backbone)
     return backbone, out_size

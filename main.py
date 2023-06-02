@@ -94,7 +94,7 @@ def main_worker(gpu, ngpus_per_node, cfg):
         torch.cuda.set_device(cfg.gpu)
         model = model.cuda(cfg.gpu)
     else:
-        model = torch.nn.DataParallel(model).cuda()
+        model.cuda()
     print(model)
 
     param_weights = []
