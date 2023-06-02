@@ -38,9 +38,6 @@ def main():
                       'You may see unexpected behavior when restarting '
                       'from checkpoints.')
 
-    if cfg.gpu is not None:
-        warnings.warn('You have chosen a specific GPU. This will completely '
-                      'disable data parallelism.')
     if cfg.train_percent in {1, 10}:
         cfg.train_files = open('./src/percent/{}percent.txt'.format(cfg.train_percent), 'r').readlines()
 
