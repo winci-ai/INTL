@@ -17,7 +17,7 @@ def get_backbone(cfg):
     """ creates backbone E() by name and modifies it for dataset """
     zero_init = False
     if cfg.arch != 'resnet18':
-        zero_init = False
+        zero_init = True
     backbone, out_size = resnet.__dict__[cfg.arch](
             zero_init_residual=zero_init)
     if cfg.dataset == "cifar10" or cfg.dataset == "cifar100":
