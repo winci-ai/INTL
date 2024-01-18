@@ -7,11 +7,11 @@
 This is an official implementation of [INTL](https://arxiv.org/abs/2305.16789).
 
 ```
-@article{weng2023modulate,
+@article{weng2024modulate,
   title={Modulate Your Spectrum in Self-Supervised Learning},
   author={Weng, Xi and Ni, Yunhao and Song, Tengwei and Luo, Jie and Anwer, Rao Muhammad and Khan, Salman and Khan, Fahad Shahbaz and Huang, Lei},
-  journal={arXiv preprint arXiv:2305.16789},
-  year={2023}
+  journal={International Conference on Learning Representations (ICLR)},
+  year={2024}
 }
 ```
 
