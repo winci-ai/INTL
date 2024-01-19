@@ -103,11 +103,6 @@ def main_worker(gpu, ngpus_per_node, cfg):
     cfg = Multi_Crop(cfg)
 
     # Data loading code 
-    assert len(cfg.nmb_crops) == len(cfg.gaussian_prob)
-    assert len(cfg.nmb_crops) == len(cfg.solarization_prob)
-    assert len(cfg.nmb_crops) == len(cfg.crops_size)
-    assert len(cfg.nmb_crops) == len(cfg.min_scale_crops)
-    assert len(cfg.nmb_crops) == len(cfg.max_scale_crops)
 
     transforms = []
     for i in range(len(cfg.nmb_crops)):

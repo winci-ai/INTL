@@ -116,4 +116,11 @@ def Multi_Crop(cfg):
         cfg.max_scale_crops = [1.0, 0.857, 0.714, 0.571, 0.429]
         cfg.gaussian_prob = [0.5, 0.5, 0.5, 0.5, 0.5]
         cfg.solarization_prob = [0.1, 0.1, 0.1, 0.1, 0.1]
+
+    assert len(cfg.nmb_crops) == len(cfg.gaussian_prob)
+    assert len(cfg.nmb_crops) == len(cfg.solarization_prob)
+    assert len(cfg.nmb_crops) == len(cfg.crops_size)
+    assert len(cfg.nmb_crops) == len(cfg.min_scale_crops)
+    assert len(cfg.nmb_crops) == len(cfg.max_scale_crops)
+    
     return cfg

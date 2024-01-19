@@ -21,5 +21,6 @@ python evaluate.py \
 --lr-classifier 0.2 \
 --lr-backbone 0.004 \
 --weights finetune \
+--train-percent 10 \  #--train-percent 1 \
 --pretrained INTL_multi-crop_ep100_resnet50.pth.tar \
 --data_path ./data/ImageNet/ \
