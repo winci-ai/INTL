@@ -91,7 +91,7 @@ def main_worker(gpu, ngpus_per_node, cfg):
     param_groups = [dict(params=classifier_parameters, lr=cfg.lr_classifier)]
     if cfg.weights == 'finetune':
         param_groups.append(dict(params=model_parameters, lr=cfg.lr_backbone))
-    optimizer = torch.optim.SGD(param_groups, 0, momentum=0.9, weight_decay=cfg.weight_decay)
+    optimizer = torch.optim.SGD(param_groups, 0, momentum=0.9, weight_decay=0)
 
     if cfg.schedule == 'step':
         scheduler = MultiStepLR(optimizer, milestones=[60, 80], gamma=0.1)
