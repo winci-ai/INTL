@@ -12,6 +12,7 @@ python main.py \
 python evaluate.py \
 --epochs 100 \
 --lr-classifier 0.4 \
+--wd 0 \
 --pretrained INTL_multi-crop_ep200_resnet50.pth.tar \
 --data_path ./data/ImageNet/ \
 
@@ -20,6 +21,7 @@ python evaluate.py \
 --epochs 20 \
 --lr-classifier 0.2 \
 --lr-backbone 0.004 \
+--wd 0 \
 --weights finetune \
 --train-percent 10 \  #--train-percent 1 \
 --pretrained INTL_multi-crop_ep200_resnet50.pth.tar \
